@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: recsys-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: recsys
+      POSTGRES_PASSWORD: recsys
+      POSTGRES_DB: movielens
+    ports:
+      - "5432:5432"
+    volumes:
+      - recsys_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U recsys -d movielens"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  recsys_pgdata:

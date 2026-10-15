@@ -1,0 +1,49 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Dataset (do not commit MovieLens files)
+data/raw/
+data/processed/
+*.csv
+*.dat
+*.tsv
+*.zip
+!**/README.md
+
+# Models and experiment artifacts
+artifacts/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.joblib
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Docker / Postgres volume dumps
+pgdata/
+*.dump
+*.sql.gz
