@@ -1,6 +1,6 @@
 # Intended relational schema
 
-**Status:** Schema planning only. No tables have been created yet. This document records design decisions before any `CREATE TABLE` or MovieLens ingest.
+**Status:** Tables `movies` and `ratings` have been created locally. Constraints for ratings table passed tests with temporary data that was rolled back. Both tables are currently empty as MovieLens ingestion has not started. Other tables are still planned.
 
 Source files (GroupLens MovieLens CSV layout; not yet downloaded):
 
@@ -43,7 +43,7 @@ One row per observed rating event. MovieLens timestamps are Unix seconds (second
 |---|---|---|---|
 | `user_id` | `INTEGER` | `userId` | Nominal user label. MovieLens has no `users.csv`; users are inferred from this column. |
 | `movie_id` | `INTEGER` | `movieId` | Must reference `movies.movie_id`. |
-| `rating` | `NUMERIC` | `rating` | Bounded discrete scale (0.5-step). Planned `CHECK (rating >= 0.5 AND rating <= 5.0)`. |
+| `rating` | `NUMERIC` | `rating` | Range enforced by `CHECK (rating BETWEEN 0.5 AND 5.0)`. Half-star increments enforced by `CHECK (MOD(rating * 2, 1) = 0)`. |
 | `rating_timestamp` | `BIGINT` | `timestamp` | Unix seconds as stored in the file. A `TIMESTAMPTZ` view or column can be added later for readable time splits. Named `rating_timestamp` so it is not confused with Postgres `TIMESTAMP` type syntax. |
 
 **Primary key:** `(user_id, movie_id)` — composite.
@@ -79,4 +79,4 @@ We will **verify** uniqueness on ingest. Duplicate pairs, if any, are a data-qua
 
 - Chronological train/validation/test split tables
 - Feature tables (must use only train-available rows; leakage is a later milestone)
-- No `CREATE TABLE` SQL lives here yet; that starts in `sql/schema/` in Milestone 2
+- Implemented DDL lives in `sql/schema/`
