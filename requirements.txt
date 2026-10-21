@@ -1,2 +1,2 @@
-# Milestone 1 stub. Pin versions when we add the first Python dependency.
-# Planned later: pandas, numpy, scikit-learn, psycopg, pytest, torch, fastapi
+# PostgreSQL driver used by the ingestion benchmark.
+psycopg[binary]==3.3.6
