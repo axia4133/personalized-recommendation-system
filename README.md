@@ -20,7 +20,7 @@ The goal is a functioning, documented system—not an unreproduced notebook dump
 
 The project will use the GroupLens [MovieLens 32M](https://grouplens.org/datasets/movielens/32m/) dataset, containing approximately 32 million movie ratings.
 
-**Status:** the dataset has not been downloaded, ingested, or processed. Record counts will be reported only after they are measured.
+**Status:** the archive has been downloaded and all four CSV checksums verified. PostgreSQL contains all 87,585 movie rows and a development sample of 15,424 ratings from 100 users. The full ratings file has not been ingested.
 
 See `data/README.md` for download instructions and usage conditions. Raw data files are not committed to git.
 
@@ -50,9 +50,9 @@ MovieLens provides **explicit ratings**, not complete exposure or watch logs. Un
 
 ## Current status
 
-**Setup only.** The project is in its initial development phase. No large-scale data processing, feature engineering pipelines, recommendation models, or evaluation experiments have been completed.
+**Milestone 2 — development sample ingested.** Movies and ratings tables, constraints, sample extraction, and bulk-loading SQL are implemented. Loaded movie and sample-rating values were compared against their source CSVs. Feature engineering, recommendation models, and evaluation experiments have not started.
 
-## Local setup (Milestone 1)
+## Local setup
 
 Requirements: Python 3.11+, Git, Docker Desktop (daemon running).
 
@@ -62,7 +62,17 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-PostgreSQL is defined in `docker-compose.yml`. Start Docker Desktop first, then we will bring the database up in the next setup task—do not run `docker compose up` until we walk through it.
+For returning sessions, start Docker Desktop, then run from the repository root:
+
+```bash
+source .venv/bin/activate
+docker compose up -d
+docker compose exec -T postgres pg_isready -U recsys -d movielens
+```
+
+Existing tables and rows persist in the Docker volume. See [data/README.md](data/README.md) for download, verification, and first-time ingestion steps. Do not repeat ingestion on populated tables.
+
+When finished, run `docker compose stop` and `deactivate`. Do not use `docker compose down -v` unless you intend to delete the database volume.
 
 ## License and data usage
 

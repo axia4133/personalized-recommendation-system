@@ -1,8 +1,8 @@
 # Intended relational schema
 
-**Status:** Tables `movies` and `ratings` have been created locally. Constraints for ratings table passed tests with temporary data that was rolled back. Both tables are currently empty as MovieLens ingestion has not started. Other tables are still planned.
+**Status:** Tables `movies` and `ratings` have been created locally. Rating constraints passed tests with temporary data that was rolled back. PostgreSQL now contains 87,585 movies and 15,424 development-sample ratings from 100 users. Loaded values were compared with the source CSVs; no sampled ratings reference missing movies. Full ratings ingestion and other tables remain planned.
 
-Source files (GroupLens MovieLens CSV layout; not yet downloaded):
+Source files (downloaded and checksum-verified GroupLens MovieLens CSVs):
 
 - `movies.csv` — `movieId`, `title`, `genres`
 - `ratings.csv` — `userId`, `movieId`, `rating`, `timestamp`
@@ -14,7 +14,7 @@ CSV headers stay in camelCase on disk. PostgreSQL columns use `snake_case`.
 - IDs (`user_id`, `movie_id`) are **nominal labels**, not quantities. We do not average them.
 - A primary key uniquely identifies a **row**, not the slice we happen to analyze. Queries can still `GROUP BY` user or movie regardless of the PK.
 - Keep source-faithful columns where a transformation would be lossy (especially genres).
-- Foreign keys and `CHECK` constraints will be added in SQL so ingest cannot silently accept impossible rows.
+- Implemented foreign keys and `CHECK` constraints enforce movie references and valid rating values during ingestion.
 
 ## `movies`
 
@@ -67,7 +67,7 @@ We will **verify** uniqueness on ingest. Duplicate pairs, if any, are a data-qua
 | `tags` | User-applied tags: `user_id`, `movie_id`, `tag`, timestamp. | Not required for the first ranking baseline. |
 | `links` | `movie_id` plus IMDb/TMDb ids. | Optional metadata; not required for first ingest. |
 
-## Load order (when we implement DDL)
+## Load order
 
 1. Create `movies` (no dependencies).
 2. Load movies.
