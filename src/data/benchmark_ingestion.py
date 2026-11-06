@@ -1,14 +1,65 @@
-"""Ingestion benchmark in progress: batched inserts into an ordinary table.
+"""Ingestion benchmark in progress: selectable INSERT and COPY loaders.
 
-Run from the repository root: python src/data/benchmark_ingestion.py
+Run from the repository root:
+    python src/data/benchmark_ingestion.py --method insert
+    python src/data/benchmark_ingestion.py --method copy
 Setup, loading, and cleanup use separate transactions. Timing is not implemented.
 Requires public.ratings_ingestion_benchmark not to exist before execution.
 """
 
+import argparse
 import csv
 import os
 
 import psycopg
+
+
+def load_with_copy(cur, rows):
+    with cur.copy("""
+        COPY public.ratings_ingestion_benchmark
+            (user_id, movie_id, rating, rating_timestamp)
+        FROM STDIN
+    """) as copy:
+        for row in rows:
+            copy.write_row((
+                row["userId"],
+                row["movieId"],
+                row["rating"],
+                row["timestamp"],
+            ))
+
+
+def load_with_insert(cur, rows, batch_size):
+    for start in range(0, len(rows), batch_size):
+        batch = rows[start : start + batch_size]
+
+        # One group of four placeholders for each rating.
+        placeholders = ", ".join(
+            ["(%s, %s, %s, %s)"] * len(batch)
+        )
+
+        parameters = []
+        for row in batch:
+            parameters.extend([
+                row["userId"],
+                row["movieId"],
+                row["rating"],
+                row["timestamp"],
+            ])
+
+        cur.execute(
+            """
+            INSERT INTO public.ratings_ingestion_benchmark
+                (user_id, movie_id, rating, rating_timestamp)
+            VALUES
+            """ + placeholders,
+            parameters,
+        )
+
+
+parser = argparse.ArgumentParser(description="Load and validate a ratings sample.")
+parser.add_argument("--method", choices=["insert", "copy"], required=True)
+args = parser.parse_args()
 
 input_file_path = "data/processed/ratings_dev.csv"
 batch_size = 1000
@@ -47,31 +98,10 @@ with psycopg.connect(
 
         # Only clean up after this run has successfully created its own table.
         try:
-            for start in range(0, len(rows), batch_size):
-                batch = rows[start : start + batch_size]
-
-                # One group of four placeholders for each rating.
-                placeholders = ", ".join(
-                    ["(%s, %s, %s, %s)"] * len(batch)
-                )
-
-                parameters = []
-                for row in batch:
-                    parameters.extend([
-                        row["userId"],
-                        row["movieId"],
-                        row["rating"],
-                        row["timestamp"],
-                    ])
-
-                cur.execute(
-                    """
-                    INSERT INTO public.ratings_ingestion_benchmark
-                        (user_id, movie_id, rating, rating_timestamp)
-                    VALUES
-                    """ + placeholders,
-                    parameters,
-                )
+            if args.method == "copy":
+                load_with_copy(cur, rows)
+            else:
+                load_with_insert(cur, rows, batch_size)
 
             # Commit all batches together, before validation or cleanup.
             conn.commit()
@@ -79,7 +109,7 @@ with psycopg.connect(
             cur.execute("SELECT COUNT(*) FROM public.ratings_ingestion_benchmark")
             inserted_count = cur.fetchone()[0]
             assert inserted_count == len(rows), "Inserted row count differs from sample"
-            print("Total rows inserted:", inserted_count)
+            print(f"Method: {args.method}; total rows inserted: {inserted_count}")
         finally:
             # Clear failed inserts (or the validation transaction) before cleanup.
             # This runs on success and on normal Python/database exceptions.
