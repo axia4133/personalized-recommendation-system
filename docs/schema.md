@@ -120,3 +120,17 @@ There are no unvalidated constraints in the completed databases.
 - Chronological train/validation/test split tables
 - Feature tables (must use only train-available rows; leakage is a later milestone)
 - Implemented DDL lives in `sql/schema/`
+
+## Milestone 3 validated source views
+
+In `movielens_full` only, `sql/cleaning/001_validated_views.sql` creates four
+`clean` views with the source columns: movies, ratings, tags (including generated
+tag ID), and links. They reference the project source tables in `public` and
+impose technical ID/reference/rating/timestamp rules without changing values or
+filtering activity, popularity, or positive ratings.
+
+The executed audit measured zero exclusions from every table. Sparse users and
+movies, optional missing metadata, and the 108 records after the interpreted
+UTC calendar boundary are retained. Titles and external IDs are not entity
+keys for merging movies. `clean` is a validated base, not a model population or
+feature table. Full counts, decisions, and limitations are in `docs/data_quality.md`.

@@ -1,0 +1,557 @@
+{
+  "status": "completed",
+  "database": "movielens_full",
+  "started_at_utc": "2026-11-06T03:23:51.674634+00:00",
+  "configuration": {
+    "dataset": "MovieLens 32M",
+    "documented_window_start_utc": "1995-01-09T00:00:00+00:00",
+    "documented_window_end_exclusive_utc": "2023-10-13T00:00:00+00:00",
+    "minimum_user_history_diagnostic": 20,
+    "sparse_movie_rating_threshold": 5,
+    "source_order_diagnostic_users": 100,
+    "notes": "Thresholds and documented dates are diagnostic, not modeling exclusions. UTC bounds interpret the published calendar dates; the timezone of those calendar-date labels is not established. The exclusive end is the next midnight under this UTC interpretation."
+  },
+  "sql_parameters": {
+    "minimum_user_history": 20,
+    "sparse_movie_threshold": 5,
+    "order_diagnostic_users": 100,
+    "window_start": 789609600,
+    "window_end": 1697155200
+  },
+  "environment": {
+    "python": "3.13.13",
+    "psycopg": "3.3.6",
+    "postgresql": "16.15 (Debian 16.15-1.pgdg13+2)"
+  },
+  "checks": {
+    "core_quality": {
+      "result": {
+        "tags": {
+          "rows": 2000072,
+          "null_tags": 0,
+          "blank_tags": 0,
+          "null_user_ids": 0,
+          "null_movie_ids": 0,
+          "null_timestamps": 0,
+          "negative_timestamps": 0,
+          "nonpositive_user_ids": 0,
+          "nonpositive_movie_ids": 0
+        },
+        "links": {
+          "rows": 87585,
+          "null_imdb_ids": 0,
+          "null_tmdb_ids": 124,
+          "blank_imdb_ids": 0,
+          "null_movie_ids": 0,
+          "malformed_imdb_ids": 0,
+          "nonpositive_tmdb_ids": 0,
+          "nonpositive_movie_ids": 0
+        },
+        "movies": {
+          "rows": 87585,
+          "null_genres": 0,
+          "null_titles": 0,
+          "blank_genres": 0,
+          "blank_titles": 0,
+          "null_movie_ids": 0,
+          "no_genres_listed": 7080,
+          "nonpositive_movie_ids": 0
+        },
+        "ratings": {
+          "rows": 32000204,
+          "null_ratings": 0,
+          "null_user_ids": 0,
+          "null_movie_ids": 0,
+          "null_timestamps": 0,
+          "negative_timestamps": 0,
+          "nonpositive_user_ids": 0,
+          "invalid_rating_values": 0,
+          "nonpositive_movie_ids": 0
+        },
+        "rating_distribution": [
+          {
+            "rows": 525132,
+            "rating": "0.5"
+          },
+          {
+            "rows": 946675,
+            "rating": "1.0"
+          },
+          {
+            "rows": 531063,
+            "rating": "1.5"
+          },
+          {
+            "rows": 2028622,
+            "rating": "2.0"
+          },
+          {
+            "rows": 1685386,
+            "rating": "2.5"
+          },
+          {
+            "rows": 6054990,
+            "rating": "3.0"
+          },
+          {
+            "rows": 4290105,
+            "rating": "3.5"
+          },
+          {
+            "rows": 8367654,
+            "rating": "4.0"
+          },
+          {
+            "rows": 2974000,
+            "rating": "4.5"
+          },
+          {
+            "rows": 4596577,
+            "rating": "5.0"
+          }
+        ]
+      },
+      "seconds": 3.058334833000117,
+      "sql_file": "sql/validation/010_core_quality.sql",
+      "sql_sha256": "09760c3e6028a4ed9d3acbe9da110da90d0b76708f54809b9b581ac683898946"
+    },
+    "duplicates_and_references": {
+      "result": {
+        "tags": {
+          "extra_rows": 0,
+          "exact_repeated_event_groups": 0
+        },
+        "links": {
+          "extra_rows": 0,
+          "duplicate_movie_groups": 0
+        },
+        "movies": {
+          "extra_rows": 0,
+          "duplicate_id_groups": 0
+        },
+        "ratings": {
+          "extra_rows": 0,
+          "duplicate_pair_groups": 0
+        },
+        "references": {
+          "tags_without_movie": 0,
+          "links_without_movie": 0,
+          "movies_without_link": 0,
+          "ratings_without_movie": 0,
+          "tag_users_without_rating_history": 0
+        },
+        "repeated_titles": {
+          "groups": 198,
+          "extra_rows": 203
+        },
+        "reused_imdb_ids": {
+          "groups": 0,
+          "extra_rows": 0
+        },
+        "reused_tmdb_ids": {
+          "groups": 36,
+          "extra_rows": 36
+        }
+      },
+      "seconds": 4.77956558400183,
+      "sql_file": "sql/validation/011_duplicates_and_references.sql",
+      "sql_sha256": "dff7e82a7e3fcb4f9f0f83a34dc7f47fee10217d3e09c797b9bf89ee1aabbaf5"
+    },
+    "activity_and_sparsity": {
+      "result": {
+        "users": {
+          "max": 33332,
+          "min": 20,
+          "mean": 159.24619304496684,
+          "count": 200948,
+          "ratings": 32000204,
+          "percentiles": [
+            36,
+            73,
+            167,
+            364,
+            571,
+            1290
+          ],
+          "single_timestamp_users": 46,
+          "below_history_threshold": 0,
+          "percentile_probabilities": [
+            0.25,
+            0.5,
+            0.75,
+            0.9,
+            0.95,
+            0.99
+          ],
+          "ratings_from_users_below_threshold": 0
+        },
+        "movies": {
+          "max": 102929,
+          "min": 0,
+          "mean": 365.36169435405606,
+          "percentiles": [
+            2,
+            5,
+            23,
+            230,
+            1007,
+            8882
+          ],
+          "rated_count": 84432,
+          "zero_ratings": 3153,
+          "catalog_count": 87585,
+          "below_rating_threshold": 43701,
+          "percentile_probabilities": [
+            0.25,
+            0.5,
+            0.75,
+            0.9,
+            0.95,
+            0.99
+          ],
+          "ratings_on_movies_below_threshold": 78737
+        },
+        "user_bins": [
+          {
+            "bin": "04:20-49",
+            "users": 72604,
+            "ratings": 2296720
+          },
+          {
+            "bin": "05:50-99",
+            "users": 47669,
+            "ratings": 3353442
+          },
+          {
+            "bin": "06:100-499",
+            "users": 68072,
+            "ratings": 14421472
+          },
+          {
+            "bin": "07:500+",
+            "users": 12603,
+            "ratings": 11928570
+          }
+        ],
+        "movie_bins": [
+          {
+            "bin": "01:0",
+            "movies": 3153,
+            "ratings": 0
+          },
+          {
+            "bin": "02:1-4",
+            "movies": 40548,
+            "ratings": 78737
+          },
+          {
+            "bin": "03:5-9",
+            "movies": 11923,
+            "ratings": 78762
+          },
+          {
+            "bin": "04:10-19",
+            "movies": 8611,
+            "ratings": 116785
+          },
+          {
+            "bin": "05:20-99",
+            "movies": 11159,
+            "ratings": 496997
+          },
+          {
+            "bin": "06:100-999",
+            "movies": 7794,
+            "ratings": 2700665
+          },
+          {
+            "bin": "07:1000+",
+            "movies": 4397,
+            "ratings": 28528258
+          }
+        ],
+        "observed_rating_density": 0.0018181902499853498
+      },
+      "seconds": 2.0563827910009422,
+      "sql_file": "sql/validation/012_activity_and_sparsity.sql",
+      "sql_sha256": "f740880d4856a5d82676bd19605b40e56062eeb7831a2ee248317716bbc07936"
+    },
+    "timestamp_diagnostics": {
+      "result": {
+        "tags": {
+          "rows": 2000072,
+          "max_epoch": 1697154983,
+          "min_epoch": 1135429210,
+          "null_timestamps": 0,
+          "negative_timestamps": 0,
+          "before_documented_start": 0,
+          "at_or_after_documented_end": 0
+        },
+        "ratings": {
+          "rows": 32000204,
+          "max_epoch": 1697164147,
+          "min_epoch": 789652004,
+          "null_timestamps": 0,
+          "negative_timestamps": 0,
+          "before_documented_start": 0,
+          "at_or_after_documented_end": 108
+        },
+        "tag_years": [
+          {
+            "rows": 27,
+            "year": "2005"
+          },
+          {
+            "rows": 28624,
+            "year": "2006"
+          },
+          {
+            "rows": 25054,
+            "year": "2007"
+          },
+          {
+            "rows": 16431,
+            "year": "2008"
+          },
+          {
+            "rows": 58309,
+            "year": "2009"
+          },
+          {
+            "rows": 46194,
+            "year": "2010"
+          },
+          {
+            "rows": 48422,
+            "year": "2011"
+          },
+          {
+            "rows": 41255,
+            "year": "2012"
+          },
+          {
+            "rows": 48440,
+            "year": "2013"
+          },
+          {
+            "rows": 34961,
+            "year": "2014"
+          },
+          {
+            "rows": 91287,
+            "year": "2015"
+          },
+          {
+            "rows": 83132,
+            "year": "2016"
+          },
+          {
+            "rows": 83741,
+            "year": "2017"
+          },
+          {
+            "rows": 312545,
+            "year": "2018"
+          },
+          {
+            "rows": 91275,
+            "year": "2019"
+          },
+          {
+            "rows": 154746,
+            "year": "2020"
+          },
+          {
+            "rows": 574212,
+            "year": "2021"
+          },
+          {
+            "rows": 199927,
+            "year": "2022"
+          },
+          {
+            "rows": 61490,
+            "year": "2023"
+          }
+        ],
+        "rating_years": [
+          {
+            "rows": 4,
+            "year": "1995"
+          },
+          {
+            "rows": 1571368,
+            "year": "1996"
+          },
+          {
+            "rows": 685388,
+            "year": "1997"
+          },
+          {
+            "rows": 301691,
+            "year": "1998"
+          },
+          {
+            "rows": 1174629,
+            "year": "1999"
+          },
+          {
+            "rows": 1912322,
+            "year": "2000"
+          },
+          {
+            "rows": 1160098,
+            "year": "2001"
+          },
+          {
+            "rows": 849762,
+            "year": "2002"
+          },
+          {
+            "rows": 1011000,
+            "year": "2003"
+          },
+          {
+            "rows": 1139068,
+            "year": "2004"
+          },
+          {
+            "rows": 1752573,
+            "year": "2005"
+          },
+          {
+            "rows": 1141704,
+            "year": "2006"
+          },
+          {
+            "rows": 1023813,
+            "year": "2007"
+          },
+          {
+            "rows": 1117071,
+            "year": "2008"
+          },
+          {
+            "rows": 890696,
+            "year": "2009"
+          },
+          {
+            "rows": 860073,
+            "year": "2010"
+          },
+          {
+            "rows": 729301,
+            "year": "2011"
+          },
+          {
+            "rows": 695493,
+            "year": "2012"
+          },
+          {
+            "rows": 563301,
+            "year": "2013"
+          },
+          {
+            "rows": 518537,
+            "year": "2014"
+          },
+          {
+            "rows": 1743866,
+            "year": "2015"
+          },
+          {
+            "rows": 1918739,
+            "year": "2016"
+          },
+          {
+            "rows": 1827953,
+            "year": "2017"
+          },
+          {
+            "rows": 1391057,
+            "year": "2018"
+          },
+          {
+            "rows": 1385467,
+            "year": "2019"
+          },
+          {
+            "rows": 1688159,
+            "year": "2020"
+          },
+          {
+            "rows": 1239912,
+            "year": "2021"
+          },
+          {
+            "rows": 913105,
+            "year": "2022"
+          },
+          {
+            "rows": 794054,
+            "year": "2023"
+          }
+        ],
+        "movie_id_order_diagnostic": {
+          "scope": "first distinct user IDs, not a random sample",
+          "users": 100,
+          "ratings": 15424,
+          "adjacent_pairs": 15324,
+          "timestamp_decreases": 7528
+        }
+      },
+      "seconds": 2.554037750000134,
+      "sql_file": "sql/validation/013_timestamp_diagnostics.sql",
+      "sql_sha256": "28e050ca0da0fb4e0544e470fd981c63fc8315f4bacd1aa09fc75bdef270eef2"
+    },
+    "timestamp_boundary_review": {
+      "result": {
+        "interpretation": "Calendar-boundary discrepancy; retained pending provenance clarification",
+        "max_flagged_epoch": 1697164147,
+        "min_flagged_epoch": 1697155234,
+        "last_following_day_utc": "2023-10-13 02:29:07+00",
+        "first_following_day_utc": "2023-10-13 00:00:34+00",
+        "within_following_utc_day": 108,
+        "users_with_flagged_ratings": 36,
+        "at_or_after_another_24_hours": 0,
+        "at_or_after_interpreted_utc_end": 108,
+        "last_following_day_america_chicago": "2023-10-12 21:29:07",
+        "following_day_events_on_preceding_chicago_date": 108
+      },
+      "seconds": 0.31686579099914525,
+      "sql_file": "sql/validation/014_timestamp_boundary_review.sql",
+      "sql_sha256": "1d8fc641525bd7f441bb8be705c09342b5367f59857892cf2f8f0efd7c91c976"
+    }
+  },
+  "phase": "completed",
+  "cleaning": {
+    "views_installed": true,
+    "sql_file": "sql/cleaning/001_validated_views.sql",
+    "sql_sha256": "e615b21057e5a18d825f5e7d5371aa829074cb0e09a01f79bf4d45e7f5bd4c2a",
+    "raw_rows": {
+      "movies": 87585,
+      "ratings": 32000204,
+      "tags": 2000072,
+      "links": 87585
+    },
+    "clean_rows": {
+      "movies": 87585,
+      "ratings": 32000204,
+      "tags": 2000072,
+      "links": 87585
+    },
+    "excluded_rows": {
+      "movies": 0,
+      "ratings": 0,
+      "tags": 0,
+      "links": 0
+    },
+    "policy": "Technical validity only; no activity, popularity, positivity, or documented-window exclusions",
+    "raw_tables_modified": false
+  },
+  "audit_snapshot_utc": "2026-11-06 03:23:51.684508+00",
+  "audit_isolation": "REPEATABLE READ, READ ONLY",
+  "reconciliations_passed": true,
+  "completed_at_utc": "2026-11-06T03:24:07.267545+00:00",
+  "total_seconds": 15.59242441600145
+}

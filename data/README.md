@@ -94,3 +94,13 @@ reproduction commands, tests, and limitations. The original tables are unchanged
 Tags/links ingestion and full ratings ingestion are now complete. See the
 [full-load results](../experiments/ingestion/full-load.md) and
 [runbook](../docs/ingestion.md) for the separate database scopes and reproduction.
+
+## Validated base dataset
+
+Milestone 3 is complete. `movielens_full.clean` contains views named `movies`,
+`ratings`, `tags`, and `links`. All raw records are retained under the current
+technical-validity rules; the raw tables are unchanged. No physical cleaned CSV
+is exported, and no sparsity, positivity, or interpreted calendar-window filter
+is applied. These views are not a temporal split or a finalized model cohort.
+See [the SQL quality report](../docs/data_quality.md) for reproduction, measured
+counts, timestamp ambiguity, and documented decisions.

@@ -52,7 +52,21 @@ MovieLens provides **explicit ratings**, not complete exposure or watch logs. Un
 
 **Milestone 2 complete — all 7 steps finished.** Relational schemas, constraints, development sampling, ingestion-method comparison, metadata, full ingestion, indexes, and reproducible verification are implemented. See the [ingestion runbook](docs/ingestion.md), [schema decisions](docs/schema.md), [current architecture](docs/architecture.md), and [actual full-load results](experiments/ingestion/full-load.md).
 
-Next is Milestone 3: SQL data cleaning and quality analysis. Feature engineering, recommendation models, and model evaluation have not started. Ingestion validation does not establish that all records are suitable for modeling; no modeling exclusions or deduplication have been performed.
+**Milestone 3 complete — all 6 steps finished.** Full-data SQL quality checks,
+activity/sparsity distributions, timestamp investigation, and non-destructive
+`clean` views are implemented. The reviewed audit preserves all 32,000,204
+ratings and excludes zero rows. See the [quality findings and cleaning
+decisions](docs/data_quality.md) and [executed reports](experiments/quality/README.md).
+
+Findings include 7,080 movies with no genre labels, 124 missing TMDb mappings,
+198 repeated-title groups, 36 reused TMDb-ID groups, and 108 ratings beyond a
+UTC interpretation of the publisher's final calendar date. These are documented
+and retained rather than silently removed or merged.
+
+Next is Milestone 4: SQL feature engineering. Feature generation must establish
+prediction-time boundaries before computing historical statistics. No models,
+temporal splits, or ranking evaluation have been implemented. Whole-history
+quality aggregates are diagnostics and must not be used as training features.
 
 The ingestion-method benchmark is complete: on the 15,424-rating development
 sample, median load times across three measured runs were 0.2052 seconds for
@@ -83,7 +97,7 @@ Existing tables and rows persist in the Docker volume. See [data/README.md](data
 
 When finished, run `docker compose stop` and `deactivate`. Do not use `docker compose down -v` unless you intend to delete the database volume.
 
-Run unit tests with `python -m pytest -q`. With Docker running and the development database available, run the opt-in integration suite with `RECSYS_TEST_DATABASE=1 python -m pytest -q`. The executed suite passed 24 tests.
+Run unit tests with `python -m pytest -q`. With Docker running and the development database available, run the opt-in integration suite with `RECSYS_TEST_DATABASE=1 python -m pytest -q`. The executed suite passed 36 tests.
 
 ## License and data usage
 

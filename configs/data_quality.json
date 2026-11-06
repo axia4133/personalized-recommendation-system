@@ -1,0 +1,9 @@
+{
+  "dataset": "MovieLens 32M",
+  "documented_window_start_utc": "1995-01-09T00:00:00+00:00",
+  "documented_window_end_exclusive_utc": "2023-10-13T00:00:00+00:00",
+  "minimum_user_history_diagnostic": 20,
+  "sparse_movie_rating_threshold": 5,
+  "source_order_diagnostic_users": 100,
+  "notes": "Thresholds and documented dates are diagnostic, not modeling exclusions. UTC bounds interpret the published calendar dates; the timezone of those calendar-date labels is not established. The exclusive end is the next midnight under this UTC interpretation."
+}

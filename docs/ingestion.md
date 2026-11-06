@@ -5,6 +5,10 @@ an ingestion-method benchmark, metadata, and full ingestion. Data quality
 investigation and modeling population exclusions are Milestone 3; no cleaning
 or model evaluation is performed by this pipeline.
 
+Milestone 3 has now been completed separately: see [the quality findings and
+validated-view workflow](data_quality.md). The ingestion results below remain
+the historical evidence for the raw load, before that audit.
+
 **Completed:** all 7 Milestone 2 steps. Step 6 (metadata) completed its schema,
 load, and verification substeps; Step 7 (full ingestion) completed resource/source
 verification, full loads/keys, complete value validation, and documentation.
