@@ -1,0 +1,177 @@
+{
+  "status": "completed",
+  "started_at_utc": "2026-11-06T02:46:57.880662+00:00",
+  "database": "movielens",
+  "scope": "metadata",
+  "sources": {
+    "tags": {
+      "summary": {
+        "rows": 2000072,
+        "null_tags": 0,
+        "users": 15848
+      },
+      "md5": "963bf4fa4de6b8901868fddd3eb54567",
+      "sha256": "c52e458a89b9deee410f50813e7a64491fbe92a6f07b5c4b58e64c0b3cc95b89",
+      "values_sha256": "d471f9c8537d763ad4dec4869b9608d356a4df5f8c50034866b460746fec949e",
+      "bytes": 72353890
+    },
+    "links": {
+      "summary": {
+        "rows": 87585,
+        "null_imdb_ids": 0,
+        "null_tmdb_ids": 124,
+        "imdb_ids_with_leading_zero": 46596
+      },
+      "md5": "8f033867bcb4e6be8792b21468b4fa6e",
+      "sha256": "ef17da7710be76f7d510d5768d1b61826e3af4bf57812b9ca377e4c912123b22",
+      "values_sha256": "c4a6c0ad26c19ce8c469dfec5e63e3ca091f1649291e0787fb918a7fd9dcb7cb",
+      "bytes": 1950748
+    }
+  },
+  "loads": {
+    "tags": {
+      "load_and_key_validation_seconds": 1.4491469590011548,
+      "deferred_key_names": [
+        "tags_pkey",
+        "tags_movie_id_fkey"
+      ]
+    },
+    "links": {
+      "load_and_key_validation_seconds": 0.37156454199975997,
+      "deferred_key_names": []
+    }
+  },
+  "value_validation": {
+    "tags": {
+      "rows": 2000072,
+      "values_sha256": "d471f9c8537d763ad4dec4869b9608d356a4df5f8c50034866b460746fec949e",
+      "validation_seconds": 2.942213750000519,
+      "matches_source": true
+    },
+    "links": {
+      "rows": 87585,
+      "values_sha256": "c4a6c0ad26c19ce8c469dfec5e63e3ca091f1649291e0787fb918a7fd9dcb7cb",
+      "validation_seconds": 0.11311195800044516,
+      "matches_source": true
+    }
+  },
+  "phase": "completed",
+  "postgres_version": "16.15 (Debian 16.15-1.pgdg13+2)",
+  "database_summary": {
+    "tags": {
+      "rows": 2000072,
+      "users": 15848,
+      "null_tags": 0
+    },
+    "links": {
+      "rows": 87585,
+      "null_imdb_ids": 0,
+      "null_tmdb_ids": 124,
+      "imdb_ids_with_leading_zero": 46596
+    },
+    "movies": {
+      "rows": 87585
+    },
+    "ratings": {
+      "rows": 15424,
+      "users": 100
+    }
+  },
+  "constraints": [
+    {
+      "table": "links",
+      "name": "links_movie_id_fkey",
+      "kind": "f",
+      "validated": true
+    },
+    {
+      "table": "links",
+      "name": "links_pkey",
+      "kind": "p",
+      "validated": true
+    },
+    {
+      "table": "movies",
+      "name": "movies_pkey",
+      "kind": "p",
+      "validated": true
+    },
+    {
+      "table": "ratings",
+      "name": "ratings_movie_id_fkey",
+      "kind": "f",
+      "validated": true
+    },
+    {
+      "table": "ratings",
+      "name": "ratings_pkey",
+      "kind": "p",
+      "validated": true
+    },
+    {
+      "table": "ratings",
+      "name": "ratings_rating_check",
+      "kind": "c",
+      "validated": true
+    },
+    {
+      "table": "ratings",
+      "name": "ratings_rating_check1",
+      "kind": "c",
+      "validated": true
+    },
+    {
+      "table": "tags",
+      "name": "tags_movie_id_fkey",
+      "kind": "f",
+      "validated": true
+    },
+    {
+      "table": "tags",
+      "name": "tags_pkey",
+      "kind": "p",
+      "validated": true
+    }
+  ],
+  "indexes": [
+    [
+      "links",
+      "links_pkey",
+      "CREATE UNIQUE INDEX links_pkey ON public.links USING btree (movie_id)"
+    ],
+    [
+      "movies",
+      "movies_pkey",
+      "CREATE UNIQUE INDEX movies_pkey ON public.movies USING btree (movie_id)"
+    ],
+    [
+      "ratings",
+      "ratings_movie_id_idx",
+      "CREATE INDEX ratings_movie_id_idx ON public.ratings USING btree (movie_id)"
+    ],
+    [
+      "ratings",
+      "ratings_pkey",
+      "CREATE UNIQUE INDEX ratings_pkey ON public.ratings USING btree (user_id, movie_id)"
+    ],
+    [
+      "tags",
+      "tags_movie_id_idx",
+      "CREATE INDEX tags_movie_id_idx ON public.tags USING btree (movie_id)"
+    ],
+    [
+      "tags",
+      "tags_pkey",
+      "CREATE UNIQUE INDEX tags_pkey ON public.tags USING btree (tag_id)"
+    ],
+    [
+      "tags",
+      "tags_user_movie_idx",
+      "CREATE INDEX tags_user_movie_idx ON public.tags USING btree (user_id, movie_id)"
+    ]
+  ],
+  "existing_movies_and_ratings_counts_unchanged": true,
+  "database_bytes": 242342935,
+  "completed_at_utc": "2026-11-06T02:47:06.692405+00:00",
+  "total_seconds": 8.81110895799975
+}

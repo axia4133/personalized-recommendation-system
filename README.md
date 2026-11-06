@@ -18,9 +18,9 @@ The goal is a functioning, documented system—not an unreproduced notebook dump
 
 ## Dataset
 
-The project will use the GroupLens [MovieLens 32M](https://grouplens.org/datasets/movielens/32m/) dataset, containing approximately 32 million movie ratings.
+The project uses the GroupLens [MovieLens 32M](https://grouplens.org/datasets/movielens/32m/) dataset.
 
-**Status:** the archive has been downloaded and all four CSV checksums verified. PostgreSQL contains all 87,585 movie rows and a development sample of 15,424 ratings from 100 users. The full ratings file has not been ingested.
+**Verified full ingestion:** `movielens_full` contains **32,000,204 ratings from 200,948 users**, **87,585 movies**, **2,000,072 tags**, and **87,585 links**. All four source checksums, complete streamed value comparisons, SQL summaries, and relational constraints passed. The separate `movielens` development database retains its 15,424-rating sample and also contains the full movies/tags/links metadata.
 
 See `data/README.md` for download instructions and usage conditions. Raw data files are not committed to git.
 
@@ -50,7 +50,9 @@ MovieLens provides **explicit ratings**, not complete exposure or watch logs. Un
 
 ## Current status
 
-**Milestone 2 — development sample ingested.** Movies and ratings tables, constraints, sample extraction, and bulk-loading SQL are implemented. Loaded movie and sample-rating values were compared against their source CSVs. Feature engineering, recommendation models, and evaluation experiments have not started.
+**Milestone 2 complete — all 7 steps finished.** Relational schemas, constraints, development sampling, ingestion-method comparison, metadata, full ingestion, indexes, and reproducible verification are implemented. See the [ingestion runbook](docs/ingestion.md), [schema decisions](docs/schema.md), [current architecture](docs/architecture.md), and [actual full-load results](experiments/ingestion/full-load.md).
+
+Next is Milestone 3: SQL data cleaning and quality analysis. Feature engineering, recommendation models, and model evaluation have not started. Ingestion validation does not establish that all records are suitable for modeling; no modeling exclusions or deduplication have been performed.
 
 The ingestion-method benchmark is complete: on the 15,424-rating development
 sample, median load times across three measured runs were 0.2052 seconds for
@@ -80,6 +82,8 @@ docker compose exec -T postgres pg_isready -U recsys -d movielens
 Existing tables and rows persist in the Docker volume. See [data/README.md](data/README.md) for download, verification, and first-time ingestion steps. Do not repeat ingestion on populated tables.
 
 When finished, run `docker compose stop` and `deactivate`. Do not use `docker compose down -v` unless you intend to delete the database volume.
+
+Run unit tests with `python -m pytest -q`. With Docker running and the development database available, run the opt-in integration suite with `RECSYS_TEST_DATABASE=1 python -m pytest -q`. The executed suite passed 24 tests.
 
 ## License and data usage
 

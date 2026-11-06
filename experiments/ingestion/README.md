@@ -112,3 +112,16 @@ tables were useful practice but were replaced by ordinary tables before timing.
 Remaining questions: How does COPY behave on the full ratings load? How much do
 index and foreign-key maintenance contribute at that size? Those measurements
 remain planned for the next ingestion tasks.
+
+## Subsequent Milestone 2 work
+
+Full ingestion has since completed; see [full-load.md](full-load.md). Its loader
+builds keys after COPY and uses raw-file streaming, so its timings are not a
+controlled comparison against this sample experiment. The original JSON above
+is retained unchanged as the genuine historical result.
+
+The later metadata/full pipeline also added `ratings_movie_id_idx` to the source
+schema. Future benchmark runs clone that additional index through INCLUDING ALL;
+the original measured run had only the ratings primary-key index. The benchmark
+now records cloned index definitions in new reports. Account for that schema
+change before comparing new timings with the historical results.

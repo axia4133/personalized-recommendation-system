@@ -194,6 +194,11 @@ def main():
 
     with psycopg.connect(**connection_options(), autocommit=True) as conn:
         original_counts = source_counts(conn)
+        source_indexes = conn.execute("""
+            SELECT indexname, indexdef FROM pg_indexes
+            WHERE schemaname = 'public' AND tablename = 'ratings'
+            ORDER BY indexname
+        """).fetchall()
         settings = {name: conn.execute("SELECT current_setting(%s)", (name,)).fetchone()[0]
                     for name in ("server_version", "fsync", "synchronous_commit", "full_page_writes")}
         for phase, round_number, method in trial_schedule(methods, args.repeats, args.warmups):
@@ -222,6 +227,7 @@ def main():
                                 "row validation", "cleanup"],
             "copy_implementation": "Psycopg write_row from typed in-memory tuples (text COPY)",
             "table": "fresh ordinary table each trial, same PK, checks, NOT NULL, movie FK",
+            "cloned_ratings_indexes": source_indexes,
         },
         "environment": {"python": platform.python_version(), "psycopg": psycopg.__version__,
                         "platform": platform.platform(), "postgresql_settings": settings},
