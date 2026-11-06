@@ -52,7 +52,7 @@ Usage conditions and the requested citation are in the [official dataset README]
 
 ## Reproduce the development load
 
-These steps require the project virtual environment and a running PostgreSQL container; see the root README. Python processing currently uses only the standard library.
+These steps require the project virtual environment and a running PostgreSQL container; see the root README. Sample extraction uses only the standard library. The ingestion benchmark additionally uses the pinned Psycopg dependency, and its tests use pytest.
 
 Run the following only on a fresh project database where `movies` and `ratings` do not yet exist. If the tables are already populated, skip these steps and use the count query below. Schema scripts fail on existing tables; successful ingestion must not be repeated because primary keys reject duplicate rows.
 
@@ -76,3 +76,12 @@ docker compose exec -T postgres psql -X -v ON_ERROR_STOP=1 -U recsys -d movielen
 ```
 
 Expected for this development load: 87,585 movies, 15,424 ratings, and 100 users. Counts alone do not prove source equality; row-level comparisons were also performed during the original load validation.
+
+## Ingestion benchmark
+
+Milestone 2, step 5 of 7 is complete. COPY and batched INSERT were compared on
+the development sample using fresh ordinary tables and one committed load
+transaction per trial. Both methods passed full-value comparisons on every run.
+See [the executed experiment](../experiments/ingestion/README.md) for results,
+reproduction commands, tests, and limitations. The original tables are unchanged.
+Tags/links ingestion and the full ratings load remain planned.

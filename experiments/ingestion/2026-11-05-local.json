@@ -1,0 +1,126 @@
+{
+  "status": "completed",
+  "started_at_utc": "2026-11-06T00:34:54.967209+00:00",
+  "completed_at_utc": "2026-11-06T00:34:56.239860+00:00",
+  "configuration": {
+    "input": "data/processed/ratings_dev.csv",
+    "input_sha256": "fa226e1d56d98f7aa179b45003cd4edc9cce3c9c4533b237f8e62083427c6507",
+    "rows": 15424,
+    "users": 100,
+    "methods": [
+      "insert",
+      "copy"
+    ],
+    "insert_batch_size": 1000,
+    "measured_runs_per_method": 3,
+    "warmups_per_method": 1,
+    "order": "Alternate method order by round; INSERT first in round 1",
+    "timing_includes": [
+      "BEGIN",
+      "Python loading and parameter construction",
+      "database transfer and execution",
+      "constraints and indexes",
+      "COMMIT"
+    ],
+    "timing_excludes": [
+      "CSV parsing and type conversion",
+      "connection and table setup",
+      "row validation",
+      "cleanup"
+    ],
+    "copy_implementation": "Psycopg write_row from typed in-memory tuples (text COPY)",
+    "table": "fresh ordinary table each trial, same PK, checks, NOT NULL, movie FK"
+  },
+  "environment": {
+    "python": "3.13.13",
+    "psycopg": "3.3.6",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "postgresql_settings": {
+      "server_version": "16.15 (Debian 16.15-1.pgdg13+2)",
+      "fsync": "on",
+      "synchronous_commit": "on",
+      "full_page_writes": "on"
+    }
+  },
+  "validation": {
+    "every_trial_matches_source_values": true,
+    "original_counts_unchanged": true,
+    "benchmark_table_removed": true,
+    "original_movie_rows": 87585,
+    "original_rating_rows": 15424
+  },
+  "trials": [
+    {
+      "phase": "warmup",
+      "round": 1,
+      "method": "insert",
+      "seconds": 0.22405562499989173,
+      "validated_rows": 15424
+    },
+    {
+      "phase": "warmup",
+      "round": 1,
+      "method": "copy",
+      "seconds": 0.05831433300045319,
+      "validated_rows": 15424
+    },
+    {
+      "phase": "measured",
+      "round": 1,
+      "method": "insert",
+      "seconds": 0.2426340000001801,
+      "validated_rows": 15424
+    },
+    {
+      "phase": "measured",
+      "round": 1,
+      "method": "copy",
+      "seconds": 0.05300050000005285,
+      "validated_rows": 15424
+    },
+    {
+      "phase": "measured",
+      "round": 2,
+      "method": "copy",
+      "seconds": 0.06711891699887929,
+      "validated_rows": 15424
+    },
+    {
+      "phase": "measured",
+      "round": 2,
+      "method": "insert",
+      "seconds": 0.20515712499945948,
+      "validated_rows": 15424
+    },
+    {
+      "phase": "measured",
+      "round": 3,
+      "method": "insert",
+      "seconds": 0.18245958400075324,
+      "validated_rows": 15424
+    },
+    {
+      "phase": "measured",
+      "round": 3,
+      "method": "copy",
+      "seconds": 0.06995229099993594,
+      "validated_rows": 15424
+    }
+  ],
+  "summary": {
+    "copy": {
+      "measured_runs": 3,
+      "median_seconds": 0.06711891699887929,
+      "min_seconds": 0.05300050000005285,
+      "max_seconds": 0.06995229099993594,
+      "rows_per_second_at_median": 229801.08573947253
+    },
+    "insert": {
+      "measured_runs": 3,
+      "median_seconds": 0.20515712499945948,
+      "min_seconds": 0.18245958400075324,
+      "max_seconds": 0.2426340000001801,
+      "rows_per_second_at_median": 75181.40059742326
+    }
+  }
+}

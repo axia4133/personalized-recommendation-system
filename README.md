@@ -52,6 +52,13 @@ MovieLens provides **explicit ratings**, not complete exposure or watch logs. Un
 
 **Milestone 2 — development sample ingested.** Movies and ratings tables, constraints, sample extraction, and bulk-loading SQL are implemented. Loaded movie and sample-rating values were compared against their source CSVs. Feature engineering, recommendation models, and evaluation experiments have not started.
 
+The ingestion-method benchmark is complete: on the 15,424-rating development
+sample, median load times across three measured runs were 0.2052 seconds for
+batched INSERT and 0.0671 seconds for COPY. These are local sample measurements,
+not full-dataset throughput. See [configuration, actual results, tests, and
+limitations](experiments/ingestion/README.md). This is an engineering benchmark;
+model evaluation experiments have not started.
+
 ## Local setup
 
 Requirements: Python 3.11+, Git, Docker Desktop (daemon running).
