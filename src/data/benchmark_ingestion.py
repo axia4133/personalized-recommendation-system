@@ -1,7 +1,8 @@
-"""Ingestion benchmark in progress: batching, connection, and temporary table.
+"""Ingestion benchmark in progress: batched inserts into an ordinary table.
 
 Run from the repository root: python src/data/benchmark_ingestion.py
-Batched insertion into temporary tables is implemented; timing is not yet implemented.
+Setup, loading, and cleanup use separate transactions. Timing is not implemented.
+Requires public.ratings_ingestion_benchmark not to exist before execution.
 """
 
 import csv
@@ -32,58 +33,56 @@ with psycopg.connect(
         database_name, user_name = cur.fetchone()
         print(f"Connected to database {database_name} as {user_name}")
 
-        # A temporary table's foreign keys must reference temporary tables.
+        # Fail if this table already exists; never overwrite another run's table.
+        # LIKE copies columns, checks, and indexes, but no rows or foreign keys.
         cur.execute("""
-            CREATE TEMP TABLE movies_benchmark
-            (LIKE public.movies INCLUDING ALL)
-        """)
-        cur.execute("""
-            INSERT INTO movies_benchmark (movie_id, title, genres_raw)
-            SELECT movie_id, title, genres_raw FROM public.movies
-        """)
-
-        # Copy columns, checks, and indexes, but no existing rating rows.
-        cur.execute("""
-            CREATE TEMP TABLE ratings_benchmark
+            CREATE TABLE public.ratings_ingestion_benchmark
             (LIKE public.ratings INCLUDING ALL)
         """)
-
-        # LIKE does not copy foreign keys, so add the movie reference explicitly.
         cur.execute("""
-            ALTER TABLE ratings_benchmark
-            ADD FOREIGN KEY (movie_id) REFERENCES movies_benchmark (movie_id)
+            ALTER TABLE public.ratings_ingestion_benchmark
+            ADD FOREIGN KEY (movie_id) REFERENCES public.movies (movie_id)
         """)
+        conn.commit()
 
-        cur.execute("SELECT COUNT(*) FROM ratings_benchmark")
-        print("Benchmark rows:", cur.fetchone()[0])
+        # Only clean up after this run has successfully created its own table.
+        try:
+            for start in range(0, len(rows), batch_size):
+                batch = rows[start : start + batch_size]
 
-        for start in range(0, len(rows), batch_size):
-            batch = rows[start : start + batch_size]
+                # One group of four placeholders for each rating.
+                placeholders = ", ".join(
+                    ["(%s, %s, %s, %s)"] * len(batch)
+                )
 
-            # One group of four placeholders for each rating.
-            placeholders = ", ".join(
-                ["(%s, %s, %s, %s)"] * len(batch)
-            )
+                parameters = []
+                for row in batch:
+                    parameters.extend([
+                        row["userId"],
+                        row["movieId"],
+                        row["rating"],
+                        row["timestamp"],
+                    ])
 
-            parameters = []
-            for row in batch:
-                parameters.extend([
-                    row["userId"],
-                    row["movieId"],
-                    row["rating"],
-                    row["timestamp"],
-                ])
+                cur.execute(
+                    """
+                    INSERT INTO public.ratings_ingestion_benchmark
+                        (user_id, movie_id, rating, rating_timestamp)
+                    VALUES
+                    """ + placeholders,
+                    parameters,
+                )
 
-            cur.execute(
-                """
-                INSERT INTO ratings_benchmark
-                    (user_id, movie_id, rating, rating_timestamp)
-                VALUES
-                """ + placeholders,
-                parameters,
-            )
+            # Commit all batches together, before validation or cleanup.
+            conn.commit()
 
-        cur.execute("SELECT COUNT(*) FROM ratings_benchmark")
-        inserted_count = cur.fetchone()[0]
-        assert inserted_count == len(rows), "Inserted row count differs from sample"
-        print("Total rows inserted:", inserted_count)
+            cur.execute("SELECT COUNT(*) FROM public.ratings_ingestion_benchmark")
+            inserted_count = cur.fetchone()[0]
+            assert inserted_count == len(rows), "Inserted row count differs from sample"
+            print("Total rows inserted:", inserted_count)
+        finally:
+            # Clear failed inserts (or the validation transaction) before cleanup.
+            # This runs on success and on normal Python/database exceptions.
+            conn.rollback()
+            cur.execute("DROP TABLE public.ratings_ingestion_benchmark")
+            conn.commit()
