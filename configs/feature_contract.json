@@ -1,0 +1,21 @@
+{
+  "behavioral_time_rule": "Every behavioral source event is strictly before the snapshot cutoff; labels must be at or after it.",
+  "identifiers": ["user_id", "movie_id"],
+  "history_availability_indicators": ["has_user_history", "has_movie_history"],
+  "eligibility_only_not_learned_features": ["has_prior_rating", "eligible_under_observed_catalog_policy"],
+  "behavioral_pair_features": [
+    "user_rating_count", "user_mean_rating", "user_rating_stddev",
+    "user_recent_rating_count", "user_days_since_last_rating",
+    "movie_rating_count", "movie_mean_rating", "movie_shrunk_mean_rating",
+    "movie_recent_rating_count", "movie_popularity_share",
+    "popularity_relative_to_user_history", "movie_user_rating_bias_gap"
+  ],
+  "optional_static_genre_features": [
+    "user_genre_affinity", "known_item_genres", "genres_with_user_history",
+    "genre_preference_coverage", "user_known_genre_history_fraction"
+  ],
+  "metadata_warning": "Genre labels are not historically versioned. The optional genre group requires an explicit static-metadata assumption and is not certified historically available.",
+  "not_training_inputs": ["snapshot_context.source_rating_rows", "snapshot build timestamps", "whole-history quality-audit aggregates"],
+  "missing_values": "Cold-user recency and relative popularity may be NULL. Any learned imputation/scaling must be fitted on training data only.",
+  "candidate_policy_warning": "Historical movie observation is a conservative availability proxy, not an exposure or release log. Eligibility remains subject to Milestone 5's final protocol."
+}

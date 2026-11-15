@@ -104,3 +104,11 @@ is exported, and no sparsity, positivity, or interpreted calendar-window filter
 is applied. These views are not a temporal split or a finalized model cohort.
 See [the SQL quality report](../docs/data_quality.md) for reproduction, measured
 counts, timestamp ambiguity, and documented decisions.
+
+## Historical feature snapshots
+
+Milestone 4 adds `features_20200101` and the tiny `features_smoke_19960101` schemas
+in `movielens_full`. Raw data and `clean` views are unchanged. Feature tables and
+indexes remain in PostgreSQL, not committed dataset exports. Machine-readable
+execution reports in `experiments/features/` contain aggregate evidence, not
+interaction files or trained model artifacts. See [the feature runbook](../docs/features.md).

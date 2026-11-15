@@ -63,10 +63,24 @@ Findings include 7,080 movies with no genre labels, 124 missing TMDb mappings,
 UTC interpretation of the publisher's final calendar date. These are documented
 and retained rather than silently removed or merged.
 
-Next is Milestone 4: SQL feature engineering. Feature generation must establish
-prediction-time boundaries before computing historical statistics. No models,
-temporal splits, or ranking evaluation have been implemented. Whole-history
-quality aggregates are diagnostics and must not be used as training features.
+**Milestone 4 complete — all 6 steps finished.** SQL feature snapshots now include
+normalized genres, historical user/movie summaries, weighted genre affinity,
+relative-popularity signals, and bounded user-item lookups. The exploratory
+pre-2020 snapshot uses **27,364,974 ratings**, **179,419 users**, and **59,952 movies**;
+all behavioral events strictly precede its cutoff. Static genre metadata is
+unversioned and requires a separate documented assumption.
+
+See the [feature formulas and contract](docs/features.md),
+[actual builds and query plans](experiments/features/README.md), and
+`configs/feature_contract.json`. A shared-memory failure and successful
+session-scoped retry are recorded honestly. No global server/container resource
+settings were changed.
+
+Next is Milestone 5: problem formulation and chronological datasets. The
+pre-2020 cutoff is exploratory, not a final train/validation/test choice. No
+models, temporal splits, or ranking evaluation have been implemented. Labels
+must be at/after their feature snapshot cutoff; whole-history quality aggregates
+and context's full-source count must never be used as training features.
 
 The ingestion-method benchmark is complete: on the 15,424-rating development
 sample, median load times across three measured runs were 0.2052 seconds for
@@ -97,7 +111,7 @@ Existing tables and rows persist in the Docker volume. See [data/README.md](data
 
 When finished, run `docker compose stop` and `deactivate`. Do not use `docker compose down -v` unless you intend to delete the database volume.
 
-Run unit tests with `python -m pytest -q`. With Docker running and the development database available, run the opt-in integration suite with `RECSYS_TEST_DATABASE=1 python -m pytest -q`. The executed suite passed 36 tests.
+Run unit tests with `python -m pytest -q`. With Docker running and the development database available, run the opt-in integration suite with `RECSYS_TEST_DATABASE=1 python -m pytest -q`. The executed suite passed 61 tests.
 
 ## License and data usage
 

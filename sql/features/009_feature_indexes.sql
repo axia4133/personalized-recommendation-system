@@ -1,0 +1,10 @@
+ALTER TABLE user_features ADD PRIMARY KEY (user_id);
+ALTER TABLE movie_features ADD PRIMARY KEY (movie_id);
+ALTER TABLE movie_genres ADD PRIMARY KEY (movie_id, genre);
+ALTER TABLE movie_genres ADD FOREIGN KEY (movie_id) REFERENCES movie_features(movie_id);
+ALTER TABLE user_genre_features ADD PRIMARY KEY (user_id, genre);
+ALTER TABLE user_genre_features ADD FOREIGN KEY (user_id) REFERENCES user_features(user_id);
+ALTER TABLE user_history_features ADD PRIMARY KEY (user_id);
+ALTER TABLE user_history_features ADD FOREIGN KEY (user_id) REFERENCES user_features(user_id);
+ALTER TABLE snapshot_context ADD PRIMARY KEY (singleton);
+ALTER TABLE snapshot_context ADD CHECK (singleton);

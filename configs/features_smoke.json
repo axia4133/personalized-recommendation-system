@@ -1,0 +1,14 @@
+{
+  "snapshot_schema": "features_smoke_19960101",
+  "cutoff_utc": "1996-01-01T00:00:00+00:00",
+  "recent_window_days": 90,
+  "movie_prior_count": 20.0,
+  "genre_prior_weight": 5.0,
+  "genre_metadata_policy": "static_unversioned_assumption",
+  "example_users": 20,
+  "example_movies": 50,
+  "work_mem_mb": 64,
+  "parallel_workers_per_gather": 0,
+  "inspect_query_plans": true,
+  "purpose": "Tiny early-date smoke snapshot on the full source; not representative, not a training or evaluation split."
+}

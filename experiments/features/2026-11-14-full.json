@@ -1,0 +1,40 @@
+{
+  "status": "failed",
+  "database": "movielens_full",
+  "schema": "features_20200101",
+  "started_at_utc": "2026-11-15T05:35:13.411714+00:00",
+  "configuration": {
+    "snapshot_schema": "features_20200101",
+    "cutoff_utc": "2020-01-01T00:00:00+00:00",
+    "recent_window_days": 90,
+    "movie_prior_count": 20.0,
+    "genre_prior_weight": 5.0,
+    "genre_metadata_policy": "static_unversioned_assumption",
+    "example_users": 20,
+    "example_movies": 50,
+    "work_mem_mb": 64,
+    "inspect_query_plans": true,
+    "purpose": "Exploratory feature snapshot only; no train/validation/test split or model result. All behavioral inputs strictly precede cutoff."
+  },
+  "sql_parameters": {
+    "cutoff": 1577836800,
+    "cutoff_utc": "2020-01-01T00:00:00+00:00",
+    "recent_start": 1570060800,
+    "recent_window_days": 90,
+    "movie_prior_count": 20.0,
+    "genre_prior_weight": 5.0,
+    "genre_metadata_policy": "static_unversioned_assumption"
+  },
+  "environment": {
+    "python": "3.13.13",
+    "psycopg": "3.3.6",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "postgresql": "16.15 (Debian 16.15-1.pgdg13+2)"
+  },
+  "scope": "Exploratory frozen features; no labels, splits, trained model, or ranking metrics",
+  "behavioral_policy": "rating_timestamp strictly less than cutoff",
+  "metadata_limitation": "Genre labels are static and unversioned; historical availability cannot be verified",
+  "phase": "007_user_history_features.sql",
+  "error_type": "DiskFull",
+  "failed_at_utc": "2026-11-15T05:36:46.462314+00:00"
+}

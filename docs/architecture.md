@@ -19,6 +19,10 @@ flowchart TD
     M --> N[Measured findings and versioned cleaning decisions]
     H --> O[clean schema: validated source views]
     N --> O
+    O --> P[Strictly pre-cutoff frozen history in features schemas]
+    P --> Q[SQL user, movie, genre-affinity, and history tables]
+    Q --> R[Bounded user-item feature query]
+    P --> S[Validation and actual query-plan reports]
 ```
 
 The two databases share one Docker PostgreSQL service and persistent named
@@ -36,5 +40,11 @@ database. The quality runner profiles a repeatable-read snapshot and installs
 views separately; the current rules exclude zero rows. Full-history activity
 statistics are report diagnostics, not train-time features.
 
-Models, chronological datasets, SQL feature tables, and an API are planned, not
-implemented. No model performance or full production-scale serving is claimed.
+SQL feature tables and bounded pair lookups are implemented in separate
+snapshot schemas in `movielens_full`. The main exploratory snapshot cuts history
+strictly before 2020-01-01 UTC; it is not a training split. Static genre labels
+are not historically versioned. Context's source-wide counts are diagnostic
+metadata and do not enter the pair feature vector.
+
+Models, chronological train/validation/test datasets, and an API remain planned.
+No model performance or full production-scale serving is claimed.

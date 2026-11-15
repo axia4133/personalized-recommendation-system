@@ -33,9 +33,9 @@ One row per movie. Parent table; no foreign keys.
 **Genres approach (both):**
 
 - Keep `genres_raw` on `movies` so the source string is never thrown away.
-- Later, add `movie_genres` with one row per `(movie_id, genre)` so joins, `GROUP BY genre`, and genre-affinity features are straightforward SQL.
+- Snapshot-scoped `movie_genres` is now implemented with one row per `(movie_id, genre)` so joins, `GROUP BY genre`, and genre-affinity features are straightforward SQL.
 
-A movie can belong to multiple genres, so a single `TEXT` column is the wrong grain for those queries. The split table is deferred until core ingest of `movies` and `ratings` works.
+A movie can belong to multiple genres, so a single `TEXT` column is the wrong grain for those queries. Raw strings are preserved, while snapshot tables normalize genres for historically observed movie IDs. Genre metadata is static and unversioned; historical availability is not established.
 
 ## `ratings`
 
@@ -105,7 +105,7 @@ There are no unvalidated constraints in the completed databases.
 | Table | Intent | When |
 |---|---|---|
 | `users` | `user_id` primary key, populated from distinct ids in ratings (and later tags). Enables `ratings.user_id` FK. | After first ratings load, if we want stricter integrity. |
-| `movie_genres` | PK `(movie_id, genre)`, FK to `movies`. One row per genre label. | After `movies` ingest is validated. |
+| Source-wide genre dimension | Snapshot-scoped `movie_genres` is implemented; a separate global normalized dimension is optional. | Only if downstream reuse requires it. |
 
 ## Load order
 
@@ -113,7 +113,7 @@ There are no unvalidated constraints in the completed databases.
 2. Load movies first; all other tables reference movies.
 3. Load and validate ratings, tags, and links.
 4. Add ingestion indexes, ANALYZE, and verify complete values and SQL summaries.
-5. Users and normalized movie genres remain deferred.
+5. A users table and optional source-wide genre dimension remain deferred; feature snapshots normalize their own genres.
 
 ## Out of scope for this document
 
@@ -134,3 +134,16 @@ movies, optional missing metadata, and the 108 records after the interpreted
 UTC calendar boundary are retained. Titles and external IDs are not entity
 keys for merging movies. `clean` is a validated base, not a model population or
 feature table. Full counts, decisions, and limitations are in `docs/data_quality.md`.
+
+## Milestone 4 feature schemas
+
+The successful `features_20200101` schema contains frozen `history_ratings`,
+`movie_genres`, `user_features`, `movie_features`, `user_genre_features`,
+`user_history_features`, `snapshot_context`, and `example_user_item_features`.
+It uses only rating events before 2020-01-01 UTC and preserves sparse histories.
+The four-event `features_smoke_19960101` schema is a separate low-cardinality
+smoke test. No snapshot replaces `public` or `clean`.
+
+See `docs/features.md` for grains, formulas, primary/foreign keys, time rules,
+optional metadata assumptions, and NULL/cold-start handling. These are feature
+snapshots, not label tables or a finalized model population.

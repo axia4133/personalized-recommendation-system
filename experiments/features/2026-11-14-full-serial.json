@@ -1,0 +1,345 @@
+{
+  "status": "completed",
+  "database": "movielens_full",
+  "schema": "features_20200101",
+  "started_at_utc": "2026-11-15T05:38:40.081496+00:00",
+  "configuration": {
+    "snapshot_schema": "features_20200101",
+    "cutoff_utc": "2020-01-01T00:00:00+00:00",
+    "recent_window_days": 90,
+    "movie_prior_count": 20.0,
+    "genre_prior_weight": 5.0,
+    "genre_metadata_policy": "static_unversioned_assumption",
+    "example_users": 20,
+    "example_movies": 50,
+    "work_mem_mb": 64,
+    "parallel_workers_per_gather": 0,
+    "inspect_query_plans": true,
+    "purpose": "Exploratory feature snapshot only; no train/validation/test split or model result. All behavioral inputs strictly precede cutoff."
+  },
+  "sql_parameters": {
+    "cutoff": 1577836800,
+    "cutoff_utc": "2020-01-01T00:00:00+00:00",
+    "recent_start": 1570060800,
+    "recent_window_days": 90,
+    "movie_prior_count": 20.0,
+    "genre_prior_weight": 5.0,
+    "genre_metadata_policy": "static_unversioned_assumption"
+  },
+  "environment": {
+    "python": "3.13.13",
+    "psycopg": "3.3.6",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "postgresql": "16.15 (Debian 16.15-1.pgdg13+2)"
+  },
+  "scope": "Exploratory frozen features; no labels, splits, trained model, or ranking metrics",
+  "behavioral_policy": "rating_timestamp strictly less than cutoff",
+  "metadata_limitation": "Genre labels are static and unversioned; historical availability cannot be verified",
+  "phase": "completed",
+  "snapshot": {
+    "schema": "features_20200101",
+    "stages": [
+      {
+        "sql_file": "001_history.sql",
+        "seconds": 17.235654582997086
+      },
+      {
+        "sql_file": "002_history_indexes.sql",
+        "seconds": 11.841727541999717
+      },
+      {
+        "sql_file": "003_movie_genres.sql",
+        "seconds": 2.1972069170005852
+      },
+      {
+        "sql_file": "004_user_features.sql",
+        "seconds": 17.199957958000596
+      },
+      {
+        "sql_file": "005_movie_features.sql",
+        "seconds": 6.10956924999482
+      },
+      {
+        "sql_file": "006_user_genre_features.sql",
+        "seconds": 53.12417195899616
+      },
+      {
+        "sql_file": "007_user_history_features.sql",
+        "seconds": 10.333701084004133
+      },
+      {
+        "sql_file": "008_snapshot_context.sql",
+        "seconds": 11.836910958001681
+      },
+      {
+        "sql_file": "009_feature_indexes.sql",
+        "seconds": 1.30107662500086
+      }
+    ],
+    "query_plans": {
+      "before_history_indexes": [
+        {
+          "Plan": {
+            "Node Type": "Limit",
+            "Parallel Aware": false,
+            "Async Capable": false,
+            "Startup Cost": 516374.97,
+            "Total Cost": 516375.1,
+            "Plan Rows": 50,
+            "Plan Width": 17,
+            "Actual Startup Time": 586.62,
+            "Actual Total Time": 586.623,
+            "Actual Rows": 50,
+            "Actual Loops": 1,
+            "Shared Hit Blocks": 2112,
+            "Shared Read Blocks": 172224,
+            "Shared Dirtied Blocks": 0,
+            "Shared Written Blocks": 0,
+            "Local Hit Blocks": 0,
+            "Local Read Blocks": 0,
+            "Local Dirtied Blocks": 0,
+            "Local Written Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0,
+            "Plans": [
+              {
+                "Node Type": "Sort",
+                "Parent Relationship": "Outer",
+                "Parallel Aware": false,
+                "Async Capable": false,
+                "Startup Cost": 516374.97,
+                "Total Cost": 516377.06,
+                "Plan Rows": 836,
+                "Plan Width": 17,
+                "Actual Startup Time": 574.458,
+                "Actual Total Time": 574.46,
+                "Actual Rows": 50,
+                "Actual Loops": 1,
+                "Sort Key": [
+                  "rating_timestamp",
+                  "movie_id"
+                ],
+                "Sort Method": "top-N heapsort",
+                "Sort Space Used": 30,
+                "Sort Space Type": "Memory",
+                "Shared Hit Blocks": 2112,
+                "Shared Read Blocks": 172224,
+                "Shared Dirtied Blocks": 0,
+                "Shared Written Blocks": 0,
+                "Local Hit Blocks": 0,
+                "Local Read Blocks": 0,
+                "Local Dirtied Blocks": 0,
+                "Local Written Blocks": 0,
+                "Temp Read Blocks": 0,
+                "Temp Written Blocks": 0,
+                "Plans": [
+                  {
+                    "Node Type": "Seq Scan",
+                    "Parent Relationship": "Outer",
+                    "Parallel Aware": false,
+                    "Async Capable": false,
+                    "Relation Name": "history_ratings",
+                    "Alias": "history_ratings",
+                    "Startup Cost": 0.0,
+                    "Total Cost": 516347.2,
+                    "Plan Rows": 836,
+                    "Plan Width": 17,
+                    "Actual Startup Time": 574.065,
+                    "Actual Total Time": 574.425,
+                    "Actual Rows": 141,
+                    "Actual Loops": 1,
+                    "Filter": "(user_id = '1'::smallint)",
+                    "Rows Removed by Filter": 27364833,
+                    "Shared Hit Blocks": 2112,
+                    "Shared Read Blocks": 172224,
+                    "Shared Dirtied Blocks": 0,
+                    "Shared Written Blocks": 0,
+                    "Local Hit Blocks": 0,
+                    "Local Read Blocks": 0,
+                    "Local Dirtied Blocks": 0,
+                    "Local Written Blocks": 0,
+                    "Temp Read Blocks": 0,
+                    "Temp Written Blocks": 0
+                  }
+                ]
+              }
+            ]
+          },
+          "Planning": {
+            "Shared Hit Blocks": 25,
+            "Shared Read Blocks": 0,
+            "Shared Dirtied Blocks": 0,
+            "Shared Written Blocks": 0,
+            "Local Hit Blocks": 0,
+            "Local Read Blocks": 0,
+            "Local Dirtied Blocks": 0,
+            "Local Written Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "Planning Time": 0.053,
+          "Triggers": [],
+          "JIT": {
+            "Functions": 5,
+            "Options": {
+              "Inlining": true,
+              "Optimization": true,
+              "Expressions": true,
+              "Deforming": true
+            },
+            "Timing": {
+              "Generation": 0.171,
+              "Inlining": 0.897,
+              "Optimization": 6.078,
+              "Emission": 5.203,
+              "Total": 12.35
+            }
+          },
+          "Execution Time": 586.835
+        }
+      ],
+      "after_history_indexes": [
+        {
+          "Plan": {
+            "Node Type": "Limit",
+            "Parallel Aware": false,
+            "Async Capable": false,
+            "Startup Cost": 0.56,
+            "Total Cost": 91.1,
+            "Plan Rows": 50,
+            "Plan Width": 17,
+            "Actual Startup Time": 0.036,
+            "Actual Total Time": 0.043,
+            "Actual Rows": 50,
+            "Actual Loops": 1,
+            "Shared Hit Blocks": 20,
+            "Shared Read Blocks": 4,
+            "Shared Dirtied Blocks": 0,
+            "Shared Written Blocks": 0,
+            "Local Hit Blocks": 0,
+            "Local Read Blocks": 0,
+            "Local Dirtied Blocks": 0,
+            "Local Written Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0,
+            "Plans": [
+              {
+                "Node Type": "Index Scan",
+                "Parent Relationship": "Outer",
+                "Parallel Aware": false,
+                "Async Capable": false,
+                "Scan Direction": "Forward",
+                "Index Name": "history_user_time_idx",
+                "Relation Name": "history_ratings",
+                "Alias": "history_ratings",
+                "Startup Cost": 0.56,
+                "Total Cost": 1507.09,
+                "Plan Rows": 832,
+                "Plan Width": 17,
+                "Actual Startup Time": 0.035,
+                "Actual Total Time": 0.041,
+                "Actual Rows": 50,
+                "Actual Loops": 1,
+                "Index Cond": "(user_id = '1'::smallint)",
+                "Rows Removed by Index Recheck": 0,
+                "Shared Hit Blocks": 20,
+                "Shared Read Blocks": 4,
+                "Shared Dirtied Blocks": 0,
+                "Shared Written Blocks": 0,
+                "Local Hit Blocks": 0,
+                "Local Read Blocks": 0,
+                "Local Dirtied Blocks": 0,
+                "Local Written Blocks": 0,
+                "Temp Read Blocks": 0,
+                "Temp Written Blocks": 0
+              }
+            ]
+          },
+          "Planning": {
+            "Shared Hit Blocks": 17,
+            "Shared Read Blocks": 2,
+            "Shared Dirtied Blocks": 0,
+            "Shared Written Blocks": 0,
+            "Local Hit Blocks": 0,
+            "Local Read Blocks": 0,
+            "Local Dirtied Blocks": 0,
+            "Local Written Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          },
+          "Planning Time": 0.183,
+          "Triggers": [],
+          "Execution Time": 0.059
+        }
+      ]
+    },
+    "sql_sha256": {
+      "001_history.sql": "74a41affb16d1a20d1c03532cfcbceabdb9c275e376d90785206be3c7780ea16",
+      "002_history_indexes.sql": "01ac4c788d15c2fa203982c109e44e3dde9dcaa124f0094e15cec296fdf02d7d",
+      "003_movie_genres.sql": "be15d906c7993e0ee9983bd5eaf5c30ae0c584bc94426b1cc0ef3cdf04e6c581",
+      "004_user_features.sql": "e6913c0637b6113583b737c721db11d9e883a232e7d34644c87ae91444263230",
+      "005_movie_features.sql": "2cba09eaa732fe948de66eb07cc66f3426dee69876ddeae391325286fbcf9cc5",
+      "006_user_genre_features.sql": "5158b35425bea30e6ff4f84bead13d0700f1536cd08a8eac594e682873e569c1",
+      "007_user_history_features.sql": "4d04b111d13a4b75bac0b30c3c830555749b5789e1c2265c1be28dbb8c6c36d0",
+      "008_snapshot_context.sql": "3929cec334e209355fd3796883071ddf617225ce6a560ac2738b0b2d68c638e2",
+      "009_feature_indexes.sql": "fae705b16c3340db8d6f843379f0f1b5b0bf5135ad8e497b0b0f13a1fd88fa89",
+      "010_user_item_features.sql": "a7413bb96bad411b4aecc9ae4fe35e436bf28514beb2115de1d2a2a64ef64f33",
+      "011_validate_snapshot.sql": "2328844d306e68be6d020d6fca6e65e4a1ce4ab2ecbeb8f295802dd40a05f798"
+    },
+    "execution_settings": {
+      "work_mem": "64MB",
+      "max_parallel_workers_per_gather": "0",
+      "max_parallel_maintenance_workers": "2"
+    },
+    "source_snapshot_utc": "2026-11-15 05:38:40.106144+00",
+    "validation": {
+      "users": 179419,
+      "movies": 59952,
+      "history_rows": 27364974,
+      "user_genre_rows": 2935497,
+      "movie_genre_rows": 103695,
+      "invalid_user_rows": 0,
+      "user_history_rows": 179419,
+      "invalid_genre_rows": 0,
+      "invalid_movie_rows": 0,
+      "future_history_rows": 0,
+      "single_rating_users": 25,
+      "popularity_share_sum": 1.0000000000000007,
+      "invalid_affinity_rows": 0,
+      "max_history_timestamp": 1577836786,
+      "ratings_summed_over_users": 27364974,
+      "source_rows_before_cutoff": 27364974,
+      "ratings_summed_over_movies": 27364974,
+      "users_without_known_genres": 0,
+      "genre_weight_mismatch_users": 0,
+      "movies_without_known_genres": 4657
+    },
+    "example_pairs": {
+      "rows": 1000,
+      "previously_rated": 291,
+      "eligible_under_observed_catalog_policy": 709,
+      "labels_created": false
+    },
+    "context": {
+      "history_rows": 27364974,
+      "global_mean_rating": 3.5353850327064076,
+      "source_rating_rows": 32000204,
+      "genre_metadata_policy": "static_unversioned_assumption",
+      "max_history_timestamp": 1577836786,
+      "min_history_timestamp": 789652004
+    },
+    "table_bytes": {
+      "history_ratings": 3152904192,
+      "movie_genres": 8527872,
+      "user_features": 30793728,
+      "movie_features": 11845632,
+      "user_genre_features": 384729088,
+      "user_history_features": 16637952,
+      "snapshot_context": 32768,
+      "example_user_item_features": 303104
+    },
+    "total_table_bytes": 3605774336
+  },
+  "completed_at_utc": "2026-11-15T05:41:05.893482+00:00",
+  "total_seconds": 145.8003427920048
+}
