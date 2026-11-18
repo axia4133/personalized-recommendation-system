@@ -147,3 +147,19 @@ smoke test. No snapshot replaces `public` or `clean`.
 See `docs/features.md` for grains, formulas, primary/foreign keys, time rules,
 optional metadata assumptions, and NULL/cold-start handling. These are feature
 snapshots, not label tables or a finalized model population.
+
+## Milestone 5 dataset schema
+
+`datasets_calendar_v1` binds train labels from 2019 to `features_20190101`,
+validation labels from 2020 to `features_20200101`, and test labels from 2021 to
+`features_20210101`. It contains `partition_metadata`, `candidate_catalog`,
+`label_events`, `positive_truth`, `ranking_users`, `training_examples`, and
+`negative_sampling_audit`. Keys explicitly include split where appropriate.
+
+`historical_pairs`, `history_user_counts`, and `training_observations` are views,
+not duplicate materializations of the three history tables. Training examples
+have observed/sampled provenance; sampled unknowns have NULL observed rating
+and time. Actual source/cohort coverage and all table grains are documented in
+`docs/temporal_datasets.md`; the statistical contract is in
+`docs/problem_formulation.md`. Model-specific learned vocabularies are not
+fitted from held-out IDs, and ranking metrics remain Milestone 6 work.

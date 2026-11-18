@@ -1,0 +1,867 @@
+{
+  "status": "completed",
+  "database": "movielens_full",
+  "schema": "datasets_calendar_v1",
+  "configuration": {
+    "protocol_id": "calendar_v1_observed_positive_ranking",
+    "dataset_schema": "datasets_calendar_v1",
+    "positive_rating_threshold": 4.0,
+    "minimum_history_ratings": 5,
+    "unobserved_per_positive": 4,
+    "negative_seed": 42,
+    "primary_ranking_k": [
+      10,
+      20
+    ],
+    "work_mem_mb": 64,
+    "parallel_workers_per_gather": 0,
+    "default_feature_group": "behavioral_pair_features",
+    "partitions": [
+      {
+        "name": "train",
+        "cutoff_utc": "2019-01-01T00:00:00+00:00",
+        "label_end_utc": "2020-01-01T00:00:00+00:00",
+        "feature_schema": "features_20190101"
+      },
+      {
+        "name": "validation",
+        "cutoff_utc": "2020-01-01T00:00:00+00:00",
+        "label_end_utc": "2021-01-01T00:00:00+00:00",
+        "feature_schema": "features_20200101"
+      },
+      {
+        "name": "test",
+        "cutoff_utc": "2021-01-01T00:00:00+00:00",
+        "label_end_utc": "2022-01-01T00:00:00+00:00",
+        "feature_schema": "features_20210101"
+      }
+    ],
+    "selection_note": "Chosen before model results, using adjacent full calendar years and reusing the existing 2020 snapshot. The 2020 window has 366 days; compare models within the same partition, not scores across years as improvements.",
+    "test_policy": "No test labels for fitting, feature selection, or tuning. Learned parameters stay frozen after validation selection; deterministic historical input features may refresh at each prediction cutoff."
+  },
+  "feature_configuration": {
+    "snapshot_schema": "features_20200101",
+    "cutoff_utc": "2020-01-01T00:00:00+00:00",
+    "recent_window_days": 90,
+    "movie_prior_count": 20.0,
+    "genre_prior_weight": 5.0,
+    "genre_metadata_policy": "static_unversioned_assumption",
+    "example_users": 20,
+    "example_movies": 50,
+    "work_mem_mb": 64,
+    "parallel_workers_per_gather": 0,
+    "inspect_query_plans": true,
+    "purpose": "Exploratory feature snapshot only; no train/validation/test split or model result. All behavioral inputs strictly precede cutoff."
+  },
+  "feature_bindings": {
+    "train": {
+      "reused": false,
+      "configuration": {
+        "snapshot_schema": "features_20190101",
+        "cutoff_utc": "2019-01-01T00:00:00+00:00",
+        "recent_window_days": 90,
+        "movie_prior_count": 20.0,
+        "genre_prior_weight": 5.0,
+        "genre_metadata_policy": "static_unversioned_assumption",
+        "example_users": 20,
+        "example_movies": 50,
+        "work_mem_mb": 64,
+        "parallel_workers_per_gather": 0,
+        "inspect_query_plans": true,
+        "purpose": "Exploratory feature snapshot only; no train/validation/test split or model result. All behavioral inputs strictly precede cutoff."
+      },
+      "snapshot": {
+        "schema": "features_20190101",
+        "stages": [
+          {
+            "sql_file": "001_history.sql",
+            "seconds": 20.145736790997034
+          },
+          {
+            "sql_file": "002_history_indexes.sql",
+            "seconds": 13.003507916997478
+          },
+          {
+            "sql_file": "003_movie_genres.sql",
+            "seconds": 2.2580495000001974
+          },
+          {
+            "sql_file": "004_user_features.sql",
+            "seconds": 15.910990917000163
+          },
+          {
+            "sql_file": "005_movie_features.sql",
+            "seconds": 7.111735749997024
+          },
+          {
+            "sql_file": "006_user_genre_features.sql",
+            "seconds": 47.604519082997285
+          },
+          {
+            "sql_file": "007_user_history_features.sql",
+            "seconds": 9.346085332996154
+          },
+          {
+            "sql_file": "008_snapshot_context.sql",
+            "seconds": 10.68590112500533
+          },
+          {
+            "sql_file": "009_feature_indexes.sql",
+            "seconds": 1.0967030829997384
+          }
+        ],
+        "query_plans": {
+          "before_history_indexes": [
+            {
+              "Plan": {
+                "Node Type": "Limit",
+                "Parallel Aware": false,
+                "Async Capable": false,
+                "Startup Cost": 490266.63,
+                "Total Cost": 490266.75,
+                "Plan Rows": 50,
+                "Plan Width": 17,
+                "Actual Startup Time": 653.674,
+                "Actual Total Time": 653.678,
+                "Actual Rows": 50,
+                "Actual Loops": 1,
+                "Shared Hit Blocks": 2112,
+                "Shared Read Blocks": 163392,
+                "Shared Dirtied Blocks": 0,
+                "Shared Written Blocks": 0,
+                "Local Hit Blocks": 0,
+                "Local Read Blocks": 0,
+                "Local Dirtied Blocks": 0,
+                "Local Written Blocks": 0,
+                "Temp Read Blocks": 0,
+                "Temp Written Blocks": 0,
+                "Plans": [
+                  {
+                    "Node Type": "Sort",
+                    "Parent Relationship": "Outer",
+                    "Parallel Aware": false,
+                    "Async Capable": false,
+                    "Startup Cost": 490266.63,
+                    "Total Cost": 490268.58,
+                    "Plan Rows": 782,
+                    "Plan Width": 17,
+                    "Actual Startup Time": 651.798,
+                    "Actual Total Time": 651.799,
+                    "Actual Rows": 50,
+                    "Actual Loops": 1,
+                    "Sort Key": [
+                      "rating_timestamp",
+                      "movie_id"
+                    ],
+                    "Sort Method": "top-N heapsort",
+                    "Sort Space Used": 30,
+                    "Sort Space Type": "Memory",
+                    "Shared Hit Blocks": 2112,
+                    "Shared Read Blocks": 163392,
+                    "Shared Dirtied Blocks": 0,
+                    "Shared Written Blocks": 0,
+                    "Local Hit Blocks": 0,
+                    "Local Read Blocks": 0,
+                    "Local Dirtied Blocks": 0,
+                    "Local Written Blocks": 0,
+                    "Temp Read Blocks": 0,
+                    "Temp Written Blocks": 0,
+                    "Plans": [
+                      {
+                        "Node Type": "Seq Scan",
+                        "Parent Relationship": "Outer",
+                        "Parallel Aware": false,
+                        "Async Capable": false,
+                        "Relation Name": "history_ratings",
+                        "Alias": "history_ratings",
+                        "Startup Cost": 0.0,
+                        "Total Cost": 490240.65,
+                        "Plan Rows": 782,
+                        "Plan Width": 17,
+                        "Actual Startup Time": 651.375,
+                        "Actual Total Time": 651.759,
+                        "Actual Rows": 141,
+                        "Actual Loops": 1,
+                        "Filter": "(user_id = '1'::smallint)",
+                        "Rows Removed by Filter": 25979366,
+                        "Shared Hit Blocks": 2112,
+                        "Shared Read Blocks": 163392,
+                        "Shared Dirtied Blocks": 0,
+                        "Shared Written Blocks": 0,
+                        "Local Hit Blocks": 0,
+                        "Local Read Blocks": 0,
+                        "Local Dirtied Blocks": 0,
+                        "Local Written Blocks": 0,
+                        "Temp Read Blocks": 0,
+                        "Temp Written Blocks": 0
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Planning": {
+                "Shared Hit Blocks": 25,
+                "Shared Read Blocks": 0,
+                "Shared Dirtied Blocks": 0,
+                "Shared Written Blocks": 0,
+                "Local Hit Blocks": 0,
+                "Local Read Blocks": 0,
+                "Local Dirtied Blocks": 0,
+                "Local Written Blocks": 0,
+                "Temp Read Blocks": 0,
+                "Temp Written Blocks": 0
+              },
+              "Planning Time": 0.063,
+              "Triggers": [],
+              "JIT": {
+                "Functions": 5,
+                "Options": {
+                  "Inlining": false,
+                  "Optimization": false,
+                  "Expressions": true,
+                  "Deforming": true
+                },
+                "Timing": {
+                  "Generation": 0.113,
+                  "Inlining": 0.0,
+                  "Optimization": 0.095,
+                  "Emission": 1.794,
+                  "Total": 2.002
+                }
+              },
+              "Execution Time": 653.826
+            }
+          ],
+          "after_history_indexes": [
+            {
+              "Plan": {
+                "Node Type": "Limit",
+                "Parallel Aware": false,
+                "Async Capable": false,
+                "Startup Cost": 0.56,
+                "Total Cost": 90.96,
+                "Plan Rows": 50,
+                "Plan Width": 17,
+                "Actual Startup Time": 0.24,
+                "Actual Total Time": 0.247,
+                "Actual Rows": 50,
+                "Actual Loops": 1,
+                "Shared Hit Blocks": 10,
+                "Shared Read Blocks": 4,
+                "Shared Dirtied Blocks": 0,
+                "Shared Written Blocks": 0,
+                "Local Hit Blocks": 0,
+                "Local Read Blocks": 0,
+                "Local Dirtied Blocks": 0,
+                "Local Written Blocks": 0,
+                "Temp Read Blocks": 0,
+                "Temp Written Blocks": 0,
+                "Plans": [
+                  {
+                    "Node Type": "Index Scan",
+                    "Parent Relationship": "Outer",
+                    "Parallel Aware": false,
+                    "Async Capable": false,
+                    "Scan Direction": "Forward",
+                    "Index Name": "history_user_time_idx",
+                    "Relation Name": "history_ratings",
+                    "Alias": "history_ratings",
+                    "Startup Cost": 0.56,
+                    "Total Cost": 1437.83,
+                    "Plan Rows": 795,
+                    "Plan Width": 17,
+                    "Actual Startup Time": 0.239,
+                    "Actual Total Time": 0.244,
+                    "Actual Rows": 50,
+                    "Actual Loops": 1,
+                    "Index Cond": "(user_id = '1'::smallint)",
+                    "Rows Removed by Index Recheck": 0,
+                    "Shared Hit Blocks": 10,
+                    "Shared Read Blocks": 4,
+                    "Shared Dirtied Blocks": 0,
+                    "Shared Written Blocks": 0,
+                    "Local Hit Blocks": 0,
+                    "Local Read Blocks": 0,
+                    "Local Dirtied Blocks": 0,
+                    "Local Written Blocks": 0,
+                    "Temp Read Blocks": 0,
+                    "Temp Written Blocks": 0
+                  }
+                ]
+              },
+              "Planning": {
+                "Shared Hit Blocks": 19,
+                "Shared Read Blocks": 2,
+                "Shared Dirtied Blocks": 0,
+                "Shared Written Blocks": 0,
+                "Local Hit Blocks": 0,
+                "Local Read Blocks": 0,
+                "Local Dirtied Blocks": 0,
+                "Local Written Blocks": 0,
+                "Temp Read Blocks": 0,
+                "Temp Written Blocks": 0
+              },
+              "Planning Time": 0.427,
+              "Triggers": [],
+              "Execution Time": 0.262
+            }
+          ]
+        },
+        "sql_sha256": {
+          "001_history.sql": "74a41affb16d1a20d1c03532cfcbceabdb9c275e376d90785206be3c7780ea16",
+          "002_history_indexes.sql": "01ac4c788d15c2fa203982c109e44e3dde9dcaa124f0094e15cec296fdf02d7d",
+          "003_movie_genres.sql": "be15d906c7993e0ee9983bd5eaf5c30ae0c584bc94426b1cc0ef3cdf04e6c581",
+          "004_user_features.sql": "e6913c0637b6113583b737c721db11d9e883a232e7d34644c87ae91444263230",
+          "005_movie_features.sql": "2cba09eaa732fe948de66eb07cc66f3426dee69876ddeae391325286fbcf9cc5",
+          "006_user_genre_features.sql": "5158b35425bea30e6ff4f84bead13d0700f1536cd08a8eac594e682873e569c1",
+          "007_user_history_features.sql": "4d04b111d13a4b75bac0b30c3c830555749b5789e1c2265c1be28dbb8c6c36d0",
+          "008_snapshot_context.sql": "3929cec334e209355fd3796883071ddf617225ce6a560ac2738b0b2d68c638e2",
+          "009_feature_indexes.sql": "fae705b16c3340db8d6f843379f0f1b5b0bf5135ad8e497b0b0f13a1fd88fa89",
+          "010_user_item_features.sql": "a7413bb96bad411b4aecc9ae4fe35e436bf28514beb2115de1d2a2a64ef64f33",
+          "011_validate_snapshot.sql": "2328844d306e68be6d020d6fca6e65e4a1ce4ab2ecbeb8f295802dd40a05f798"
+        },
+        "execution_settings": {
+          "work_mem": "64MB",
+          "max_parallel_workers_per_gather": "0",
+          "max_parallel_maintenance_workers": "2"
+        },
+        "source_snapshot_utc": "2026-11-15 08:32:51.652594+00",
+        "validation": {
+          "users": 172569,
+          "movies": 52588,
+          "history_rows": 25979507,
+          "user_genre_rows": 2823057,
+          "movie_genre_rows": 92555,
+          "invalid_user_rows": 0,
+          "user_history_rows": 172569,
+          "invalid_genre_rows": 0,
+          "invalid_movie_rows": 0,
+          "future_history_rows": 0,
+          "single_rating_users": 25,
+          "popularity_share_sum": 0.9999999999999984,
+          "invalid_affinity_rows": 0,
+          "max_history_timestamp": 1546300794,
+          "ratings_summed_over_users": 25979507,
+          "source_rows_before_cutoff": 25979507,
+          "ratings_summed_over_movies": 25979507,
+          "users_without_known_genres": 0,
+          "genre_weight_mismatch_users": 0,
+          "movies_without_known_genres": 3807
+        },
+        "example_pairs": {
+          "rows": 1000,
+          "previously_rated": 241,
+          "eligible_under_observed_catalog_policy": 759,
+          "labels_created": false
+        },
+        "context": {
+          "history_rows": 25979507,
+          "global_mean_rating": 3.5330625789011316,
+          "source_rating_rows": 32000204,
+          "genre_metadata_policy": "static_unversioned_assumption",
+          "max_history_timestamp": 1546300794,
+          "min_history_timestamp": 789652004
+        },
+        "table_bytes": {
+          "history_ratings": 2993233920,
+          "movie_genres": 7651328,
+          "user_features": 30113792,
+          "movie_features": 10108928,
+          "user_genre_features": 370237440,
+          "user_history_features": 15958016,
+          "snapshot_context": 32768,
+          "example_user_item_features": 303104
+        },
+        "total_table_bytes": 3427639296
+      }
+    },
+    "validation": {
+      "reused": true,
+      "configuration": {
+        "snapshot_schema": "features_20200101",
+        "cutoff_utc": "2020-01-01T00:00:00+00:00",
+        "recent_window_days": 90,
+        "movie_prior_count": 20.0,
+        "genre_prior_weight": 5.0,
+        "genre_metadata_policy": "static_unversioned_assumption",
+        "example_users": 20,
+        "example_movies": 50,
+        "work_mem_mb": 64,
+        "parallel_workers_per_gather": 0,
+        "inspect_query_plans": true,
+        "purpose": "Exploratory feature snapshot only; no train/validation/test split or model result. All behavioral inputs strictly precede cutoff."
+      },
+      "schema": "features_20200101",
+      "validation": {
+        "users": 179419,
+        "movies": 59952,
+        "history_rows": 27364974,
+        "user_genre_rows": 2935497,
+        "movie_genre_rows": 103695,
+        "invalid_user_rows": 0,
+        "user_history_rows": 179419,
+        "invalid_genre_rows": 0,
+        "invalid_movie_rows": 0,
+        "future_history_rows": 0,
+        "single_rating_users": 25,
+        "popularity_share_sum": 1.0000000000000007,
+        "invalid_affinity_rows": 0,
+        "max_history_timestamp": 1577836786,
+        "ratings_summed_over_users": 27364974,
+        "source_rows_before_cutoff": 27364974,
+        "ratings_summed_over_movies": 27364974,
+        "users_without_known_genres": 0,
+        "genre_weight_mismatch_users": 0,
+        "movies_without_known_genres": 4657
+      }
+    },
+    "test": {
+      "reused": false,
+      "configuration": {
+        "snapshot_schema": "features_20210101",
+        "cutoff_utc": "2021-01-01T00:00:00+00:00",
+        "recent_window_days": 90,
+        "movie_prior_count": 20.0,
+        "genre_prior_weight": 5.0,
+        "genre_metadata_policy": "static_unversioned_assumption",
+        "example_users": 20,
+        "example_movies": 50,
+        "work_mem_mb": 64,
+        "parallel_workers_per_gather": 0,
+        "inspect_query_plans": true,
+        "purpose": "Exploratory feature snapshot only; no train/validation/test split or model result. All behavioral inputs strictly precede cutoff."
+      },
+      "snapshot": {
+        "schema": "features_20210101",
+        "stages": [
+          {
+            "sql_file": "001_history.sql",
+            "seconds": 19.14296666700102
+          },
+          {
+            "sql_file": "002_history_indexes.sql",
+            "seconds": 17.13434866600437
+          },
+          {
+            "sql_file": "003_movie_genres.sql",
+            "seconds": 2.777515999994648
+          },
+          {
+            "sql_file": "004_user_features.sql",
+            "seconds": 20.045376624999335
+          },
+          {
+            "sql_file": "005_movie_features.sql",
+            "seconds": 8.365995458996622
+          },
+          {
+            "sql_file": "006_user_genre_features.sql",
+            "seconds": 57.19413424999948
+          },
+          {
+            "sql_file": "007_user_history_features.sql",
+            "seconds": 10.32467945899407
+          },
+          {
+            "sql_file": "008_snapshot_context.sql",
+            "seconds": 11.308265915999073
+          },
+          {
+            "sql_file": "009_feature_indexes.sql",
+            "seconds": 1.3397627910017036
+          }
+        ],
+        "query_plans": {
+          "before_history_indexes": [
+            {
+              "Plan": {
+                "Node Type": "Limit",
+                "Parallel Aware": false,
+                "Async Capable": false,
+                "Startup Cost": 548292.15,
+                "Total Cost": 548292.27,
+                "Plan Rows": 50,
+                "Plan Width": 17,
+                "Actual Startup Time": 993.407,
+                "Actual Total Time": 993.412,
+                "Actual Rows": 50,
+                "Actual Loops": 1,
+                "Shared Hit Blocks": 2112,
+                "Shared Read Blocks": 182976,
+                "Shared Dirtied Blocks": 0,
+                "Shared Written Blocks": 0,
+                "Local Hit Blocks": 0,
+                "Local Read Blocks": 0,
+                "Local Dirtied Blocks": 0,
+                "Local Written Blocks": 0,
+                "Temp Read Blocks": 0,
+                "Temp Written Blocks": 0,
+                "Plans": [
+                  {
+                    "Node Type": "Sort",
+                    "Parent Relationship": "Outer",
+                    "Parallel Aware": false,
+                    "Async Capable": false,
+                    "Startup Cost": 548292.15,
+                    "Total Cost": 548294.37,
+                    "Plan Rows": 888,
+                    "Plan Width": 17,
+                    "Actual Startup Time": 979.173,
+                    "Actual Total Time": 979.174,
+                    "Actual Rows": 50,
+                    "Actual Loops": 1,
+                    "Sort Key": [
+                      "rating_timestamp",
+                      "movie_id"
+                    ],
+                    "Sort Method": "top-N heapsort",
+                    "Sort Space Used": 30,
+                    "Sort Space Type": "Memory",
+                    "Shared Hit Blocks": 2112,
+                    "Shared Read Blocks": 182976,
+                    "Shared Dirtied Blocks": 0,
+                    "Shared Written Blocks": 0,
+                    "Local Hit Blocks": 0,
+                    "Local Read Blocks": 0,
+                    "Local Dirtied Blocks": 0,
+                    "Local Written Blocks": 0,
+                    "Temp Read Blocks": 0,
+                    "Temp Written Blocks": 0,
+                    "Plans": [
+                      {
+                        "Node Type": "Seq Scan",
+                        "Parent Relationship": "Outer",
+                        "Parallel Aware": false,
+                        "Async Capable": false,
+                        "Relation Name": "history_ratings",
+                        "Alias": "history_ratings",
+                        "Startup Cost": 0.0,
+                        "Total Cost": 548262.65,
+                        "Plan Rows": 888,
+                        "Plan Width": 17,
+                        "Actual Startup Time": 978.671,
+                        "Actual Total Time": 979.141,
+                        "Actual Rows": 141,
+                        "Actual Loops": 1,
+                        "Filter": "(user_id = '1'::smallint)",
+                        "Rows Removed by Filter": 29052992,
+                        "Shared Hit Blocks": 2112,
+                        "Shared Read Blocks": 182976,
+                        "Shared Dirtied Blocks": 0,
+                        "Shared Written Blocks": 0,
+                        "Local Hit Blocks": 0,
+                        "Local Read Blocks": 0,
+                        "Local Dirtied Blocks": 0,
+                        "Local Written Blocks": 0,
+                        "Temp Read Blocks": 0,
+                        "Temp Written Blocks": 0
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Planning": {
+                "Shared Hit Blocks": 14,
+                "Shared Read Blocks": 0,
+                "Shared Dirtied Blocks": 0,
+                "Shared Written Blocks": 0,
+                "Local Hit Blocks": 0,
+                "Local Read Blocks": 0,
+                "Local Dirtied Blocks": 0,
+                "Local Written Blocks": 0,
+                "Temp Read Blocks": 0,
+                "Temp Written Blocks": 0
+              },
+              "Planning Time": 0.06,
+              "Triggers": [],
+              "JIT": {
+                "Functions": 5,
+                "Options": {
+                  "Inlining": true,
+                  "Optimization": true,
+                  "Expressions": true,
+                  "Deforming": true
+                },
+                "Timing": {
+                  "Generation": 0.292,
+                  "Inlining": 1.319,
+                  "Optimization": 7.016,
+                  "Emission": 5.917,
+                  "Total": 14.544
+                }
+              },
+              "Execution Time": 993.742
+            }
+          ],
+          "after_history_indexes": [
+            {
+              "Plan": {
+                "Node Type": "Limit",
+                "Parallel Aware": false,
+                "Async Capable": false,
+                "Startup Cost": 0.56,
+                "Total Cost": 91.33,
+                "Plan Rows": 50,
+                "Plan Width": 17,
+                "Actual Startup Time": 0.32,
+                "Actual Total Time": 0.328,
+                "Actual Rows": 50,
+                "Actual Loops": 1,
+                "Shared Hit Blocks": 15,
+                "Shared Read Blocks": 4,
+                "Shared Dirtied Blocks": 0,
+                "Shared Written Blocks": 0,
+                "Local Hit Blocks": 0,
+                "Local Read Blocks": 0,
+                "Local Dirtied Blocks": 0,
+                "Local Written Blocks": 0,
+                "Temp Read Blocks": 0,
+                "Temp Written Blocks": 0,
+                "Plans": [
+                  {
+                    "Node Type": "Index Scan",
+                    "Parent Relationship": "Outer",
+                    "Parallel Aware": false,
+                    "Async Capable": false,
+                    "Scan Direction": "Forward",
+                    "Index Name": "history_user_time_idx",
+                    "Relation Name": "history_ratings",
+                    "Alias": "history_ratings",
+                    "Startup Cost": 0.56,
+                    "Total Cost": 1585.41,
+                    "Plan Rows": 873,
+                    "Plan Width": 17,
+                    "Actual Startup Time": 0.32,
+                    "Actual Total Time": 0.325,
+                    "Actual Rows": 50,
+                    "Actual Loops": 1,
+                    "Index Cond": "(user_id = '1'::smallint)",
+                    "Rows Removed by Index Recheck": 0,
+                    "Shared Hit Blocks": 15,
+                    "Shared Read Blocks": 4,
+                    "Shared Dirtied Blocks": 0,
+                    "Shared Written Blocks": 0,
+                    "Local Hit Blocks": 0,
+                    "Local Read Blocks": 0,
+                    "Local Dirtied Blocks": 0,
+                    "Local Written Blocks": 0,
+                    "Temp Read Blocks": 0,
+                    "Temp Written Blocks": 0
+                  }
+                ]
+              },
+              "Planning": {
+                "Shared Hit Blocks": 19,
+                "Shared Read Blocks": 2,
+                "Shared Dirtied Blocks": 0,
+                "Shared Written Blocks": 0,
+                "Local Hit Blocks": 0,
+                "Local Read Blocks": 0,
+                "Local Dirtied Blocks": 0,
+                "Local Written Blocks": 0,
+                "Temp Read Blocks": 0,
+                "Temp Written Blocks": 0
+              },
+              "Planning Time": 0.415,
+              "Triggers": [],
+              "Execution Time": 0.349
+            }
+          ]
+        },
+        "sql_sha256": {
+          "001_history.sql": "74a41affb16d1a20d1c03532cfcbceabdb9c275e376d90785206be3c7780ea16",
+          "002_history_indexes.sql": "01ac4c788d15c2fa203982c109e44e3dde9dcaa124f0094e15cec296fdf02d7d",
+          "003_movie_genres.sql": "be15d906c7993e0ee9983bd5eaf5c30ae0c584bc94426b1cc0ef3cdf04e6c581",
+          "004_user_features.sql": "e6913c0637b6113583b737c721db11d9e883a232e7d34644c87ae91444263230",
+          "005_movie_features.sql": "2cba09eaa732fe948de66eb07cc66f3426dee69876ddeae391325286fbcf9cc5",
+          "006_user_genre_features.sql": "5158b35425bea30e6ff4f84bead13d0700f1536cd08a8eac594e682873e569c1",
+          "007_user_history_features.sql": "4d04b111d13a4b75bac0b30c3c830555749b5789e1c2265c1be28dbb8c6c36d0",
+          "008_snapshot_context.sql": "3929cec334e209355fd3796883071ddf617225ce6a560ac2738b0b2d68c638e2",
+          "009_feature_indexes.sql": "fae705b16c3340db8d6f843379f0f1b5b0bf5135ad8e497b0b0f13a1fd88fa89",
+          "010_user_item_features.sql": "a7413bb96bad411b4aecc9ae4fe35e436bf28514beb2115de1d2a2a64ef64f33",
+          "011_validate_snapshot.sql": "2328844d306e68be6d020d6fca6e65e4a1ce4ab2ecbeb8f295802dd40a05f798"
+        },
+        "execution_settings": {
+          "work_mem": "64MB",
+          "max_parallel_workers_per_gather": "0",
+          "max_parallel_maintenance_workers": "2"
+        },
+        "source_snapshot_utc": "2026-11-15 08:35:34.036272+00",
+        "validation": {
+          "users": 187950,
+          "movies": 66750,
+          "history_rows": 29053133,
+          "user_genre_rows": 3075145,
+          "movie_genre_rows": 114231,
+          "invalid_user_rows": 0,
+          "user_history_rows": 187950,
+          "invalid_genre_rows": 0,
+          "invalid_movie_rows": 0,
+          "future_history_rows": 0,
+          "single_rating_users": 15,
+          "popularity_share_sum": 0.9999999999999952,
+          "invalid_affinity_rows": 0,
+          "max_history_timestamp": 1609459190,
+          "ratings_summed_over_users": 29053133,
+          "source_rows_before_cutoff": 29053133,
+          "ratings_summed_over_movies": 29053133,
+          "users_without_known_genres": 0,
+          "genre_weight_mismatch_users": 0,
+          "movies_without_known_genres": 5285
+        },
+        "example_pairs": {
+          "rows": 1000,
+          "previously_rated": 290,
+          "eligible_under_observed_catalog_policy": 710,
+          "labels_created": false
+        },
+        "context": {
+          "history_rows": 29053133,
+          "global_mean_rating": 3.539069297621017,
+          "source_rating_rows": 32000204,
+          "genre_metadata_policy": "static_unversioned_assumption",
+          "max_history_timestamp": 1609459190,
+          "min_history_timestamp": 789652004
+        },
+        "table_bytes": {
+          "history_ratings": 3347374080,
+          "movie_genres": 9379840,
+          "user_features": 32555008,
+          "movie_features": 13049856,
+          "user_genre_features": 403226624,
+          "user_history_features": 17350656,
+          "snapshot_context": 32768,
+          "example_user_item_features": 303104
+        },
+        "total_table_bytes": 3823271936
+      }
+    }
+  },
+  "started_at_utc": "2026-11-15T08:32:51.624872+00:00",
+  "phase": "completed",
+  "scope": "Problem/data definition only; no models or ranking metrics",
+  "environment": {
+    "python": "3.13.13",
+    "psycopg": "3.3.6",
+    "postgresql": "16.15 (Debian 16.15-1.pgdg13+2)"
+  },
+  "datasets": {
+    "sql_sha256": {
+      "001_tables.sql": "6774a472f577a84fc9be6ec0e145b7aa303ff915ca36797b77fd479a66814c32",
+      "002_catalog.sql": "f216e90a808f80f7716a81fe83f3150ac8031698c900620b983ac65f89563d8f",
+      "003_label_events.sql": "c16f0fb55f43f7742a29339f8f49550cec13cc4380e0890022a97ed632a58284",
+      "004_derived_sets.sql": "bd31b508abdc05b7d47a78487b595acae8fa3f55b2cad4821ade22366eeb71ce",
+      "005_negative_sources.sql": "1eb8825f05fa41b3f607652505230d03e1d888dbcba4341855920c3323c76af9",
+      "006_evaluation_candidates.sql": "05be6d80131bb62c1859f37f357a68792548c5be43f3a3645af33587c9500fbc",
+      "007_validate_and_summarize.sql": "8374436c9c4a6195f081ea13206f4effbd00032ce875e178f3392fc9bc0b1529"
+    },
+    "training_catalog_sha256": "c073464a75d464408fa97777930748a28540b8cc4b62c38f6bea7c0042dd6688",
+    "summary": {
+      "sampling": {
+        "users": 5150,
+        "sampled": 425984,
+        "requested": 425984,
+        "proposal_count": 436790,
+        "users_with_pool_shortfall": 0,
+        "users_without_negative_pool": 0,
+        "users_using_enumeration_fallback": 0
+      },
+      "training": {
+        "rows": 532480,
+        "users": 5150,
+        "positive_rows": 106496,
+        "sampled_unobserved_rows": 425984
+      },
+      "partitions": [
+        {
+          "split": "train",
+          "window_users": 12345,
+          "ranking_users": 5150,
+          "status_counts": {
+            "cold_user": 571172,
+            "sparse_user": 2615,
+            "no_item_history": 9293,
+            "eligible_positive": 106496,
+            "below_positive_threshold": 695891
+          },
+          "catalog_movies": 52588,
+          "max_candidates": 52583,
+          "min_candidates": 29676,
+          "window_ratings": 1385467,
+          "mean_candidates": 52064.47495145631,
+          "all_warm_history_users": 172497,
+          "eligible_positive_labels": 106496,
+          "observed_positive_labels": 689576
+        },
+        {
+          "split": "validation",
+          "window_users": 14525,
+          "ranking_users": 5716,
+          "status_counts": {
+            "cold_user": 718190,
+            "sparse_user": 2207,
+            "no_item_history": 6491,
+            "eligible_positive": 137217,
+            "below_positive_threshold": 824054
+          },
+          "catalog_movies": 59952,
+          "max_candidates": 59947,
+          "min_candidates": 27753,
+          "window_ratings": 1688159,
+          "mean_candidates": 59438.78901329601,
+          "all_warm_history_users": 179352,
+          "eligible_positive_labels": 137217,
+          "observed_positive_labels": 864105
+        },
+        {
+          "split": "test",
+          "window_users": 12109,
+          "ranking_users": 6082,
+          "status_counts": {
+            "cold_user": 477686,
+            "sparse_user": 1986,
+            "no_item_history": 8722,
+            "eligible_positive": 126540,
+            "below_positive_threshold": 624978
+          },
+          "catalog_movies": 66750,
+          "max_candidates": 66745,
+          "min_candidates": 58243,
+          "window_ratings": 1239912,
+          "mean_candidates": 66238.43620519566,
+          "all_warm_history_users": 187892,
+          "eligible_positive_labels": 126540,
+          "observed_positive_labels": 614934
+        }
+      ],
+      "invalid_label_windows": 0,
+      "invalid_ranking_users": 0,
+      "sampling_input_policy": "Training history and training-window observations only",
+      "invalid_positive_truth": 0,
+      "invalid_training_negatives": 0,
+      "invalid_training_positives": 0,
+      "sampling_budget_mismatches": 0
+    },
+    "source_timeline": {
+      "total": 32000204,
+      "before_training_labels": 25979507,
+      "label_windows": 4313538,
+      "at_or_after_test_end": 1707159
+    },
+    "initial_fit_observations": [
+      27364974,
+      1577836786
+    ],
+    "table_bytes": {
+      "partition_metadata": 49152,
+      "candidate_catalog": 21241856,
+      "label_events": 603209728,
+      "positive_truth": 39690240,
+      "ranking_users": 2129920,
+      "training_examples": 66674688,
+      "negative_sampling_audit": 598016
+    }
+  },
+  "total_seconds": 450.049994042005,
+  "completed_at_utc": "2026-11-15T08:40:21.672939+00:00"
+}

@@ -112,3 +112,16 @@ in `movielens_full`. Raw data and `clean` views are unchanged. Feature tables an
 indexes remain in PostgreSQL, not committed dataset exports. Machine-readable
 execution reports in `experiments/features/` contain aggregate evidence, not
 interaction files or trained model artifacts. See [the feature runbook](../docs/features.md).
+
+## Chronological ranking datasets
+
+Milestone 5 adds `datasets_calendar_v1` in `movielens_full`, plus pre-2019 and
+pre-2021 feature snapshots. The existing pre-2020 snapshot is validation's
+feature source; supervised 2019 training rows bind to the older pre-2019 source.
+All raw/clean observations and the development sample remain unchanged.
+
+The protocol ranks observed future ratings >=4.0, with five prior ratings per
+primary user and a historically observed-item catalog. Training unknown contrasts
+are not dislikes. Full source/coverage counts and cold-start exclusions are in
+[the actual dataset results](../experiments/datasets/README.md). No ranked model
+output or metric result has been generated.

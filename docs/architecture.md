@@ -23,6 +23,10 @@ flowchart TD
     P --> Q[SQL user, movie, genre-affinity, and history tables]
     Q --> R[Bounded user-item feature query]
     P --> S[Validation and actual query-plan reports]
+    O --> T[2019, 2020, 2021 label windows with cutoff-bound features]
+    P --> T
+    T --> U[Observed positives, historical catalogs, and ranking cohorts]
+    U --> V[Train-only sampled unknown contrasts and bounded training batches]
 ```
 
 The two databases share one Docker PostgreSQL service and persistent named
@@ -46,5 +50,12 @@ strictly before 2020-01-01 UTC; it is not a training split. Static genre labels
 are not historically versioned. Context's source-wide counts are diagnostic
 metadata and do not enter the pair feature vector.
 
-Models, chronological train/validation/test datasets, and an API remain planned.
-No model performance or full production-scale serving is claimed.
+Chronological train/validation/test datasets are now implemented in
+`datasets_calendar_v1`, using pre-2019/pre-2020/pre-2021 features respectively.
+Training rows, held-out truth, and candidate rules are separate. Candidate item
+sets use history only; outcome-conditioned ranking users and exclusions are
+reported explicitly. Only initial training data feeds the sampler and training
+batch helper. No dense evaluation user/catalog matrix is stored.
+
+Models, ranking metric execution, and an API remain planned. No model performance
+or full production-scale serving is claimed.

@@ -18,7 +18,8 @@ movies, with zero future events or validation violations.
 This pipeline creates feature tables, not labels, train/validation/test splits,
 models, or ranking metrics. The main preset is an **exploratory snapshot at
 2020-01-01 00:00:00 UTC**. It is not a selected evaluation cutoff or a claimed
-optimal date. Milestone 5 must establish the actual objective and protocol.
+optimal date. Milestone 5 subsequently established the objective and protocol
+in [the problem formulation](problem_formulation.md).
 
 ## Time contract and populations
 
@@ -45,7 +46,7 @@ neither a temporal split nor a training-label generator.
 The item catalog proxy is movies with a rating before the cutoff. A movie's
 first observed rating is not its release date or proof of actual availability.
 Future-only and never-rated items are absent from the snapshot item tables.
-Milestone 5 must decide cold-start coverage and candidate/denominator rules;
+Milestone 5 documents cold-start coverage and candidate/denominator rules;
 this proxy must not silently hide difficult future positives during evaluation.
 
 The published MovieLens cohort itself was selected using total interaction
@@ -72,6 +73,11 @@ title text, parsed years, and external metadata are not used as features here.
 
 The pipeline runs `sql/features/001_history.sql` through
 `009_feature_indexes.sql`, with validation in `011_validate_snapshot.sql`.
+
+Milestone 5 now assigns the pre-2020 artifact to validation, with separate
+pre-2019 training and pre-2021 test histories. The earlier exploratory snapshot
+is not reused for earlier training labels. See `docs/problem_formulation.md` for
+the fixed windows, initial fitting budget, and coverage limitations.
 
 1. `history_ratings`: frozen pre-cutoff user/movie/rating/Unix-second rows. The
    primary key is `(user_id, movie_id)`; an additional

@@ -76,11 +76,24 @@ See the [feature formulas and contract](docs/features.md),
 session-scoped retry are recorded honestly. No global server/container resource
 settings were changed.
 
-Next is Milestone 5: problem formulation and chronological datasets. The
-pre-2020 cutoff is exploratory, not a final train/validation/test choice. No
-models, temporal splits, or ranking evaluation have been implemented. Labels
-must be at/after their feature snapshot cutoff; whole-history quality aggregates
-and context's full-source count must never be used as training features.
+**Milestone 5 complete — all 6 steps finished.** Version-one observed-positive
+ranking datasets use 2019/2020/2021 train/validation/test label windows, each
+bound to its own strictly earlier feature snapshot. Training contains **106,496
+observed positives** and **425,984 sampled unobserved contrasts**; unknowns are
+not treated as observed dislikes. Evaluation candidates are the exhaustive
+historical catalog minus pre-cutoff seen items, with no sampled evaluation negatives.
+
+This is a warm-history benchmark, not an all-user claim: it retains **15.88%** of
+all validation positive labels and **20.58%** of test positives. Exclusion reasons
+and full denominators are recorded. See the [problem definition](docs/problem_formulation.md),
+[dataset runbook](docs/temporal_datasets.md), and [actual coverage evidence](experiments/datasets/README.md).
+
+Next is Milestone 6: baseline recommendation models and tested ranking metrics.
+No model training or ranking scores have been executed. Labels must be at/after
+their feature cutoff; whole-history quality aggregates and context's full-source
+count are never training features. The pre-2020 snapshot now serves validation,
+not 2019 training labels. Learned preprocessing and model parameters remain fit
+from the initial training information budget.
 
 The ingestion-method benchmark is complete: on the 15,424-rating development
 sample, median load times across three measured runs were 0.2052 seconds for
@@ -111,7 +124,7 @@ Existing tables and rows persist in the Docker volume. See [data/README.md](data
 
 When finished, run `docker compose stop` and `deactivate`. Do not use `docker compose down -v` unless you intend to delete the database volume.
 
-Run unit tests with `python -m pytest -q`. With Docker running and the development database available, run the opt-in integration suite with `RECSYS_TEST_DATABASE=1 python -m pytest -q`. The executed suite passed 61 tests.
+Run unit tests with `python -m pytest -q`. With Docker running and the development database available, run the opt-in integration suite with `RECSYS_TEST_DATABASE=1 python -m pytest -q`. The executed suite passed 79 tests.
 
 ## License and data usage
 

@@ -1,0 +1,110 @@
+{
+  "status": "completed",
+  "database": "movielens_full",
+  "schema": "datasets_calendar_v1",
+  "configuration": {
+    "protocol_id": "calendar_v1_observed_positive_ranking",
+    "dataset_schema": "datasets_calendar_v1",
+    "positive_rating_threshold": 4.0,
+    "minimum_history_ratings": 5,
+    "unobserved_per_positive": 4,
+    "negative_seed": 42,
+    "primary_ranking_k": [
+      10,
+      20
+    ],
+    "work_mem_mb": 64,
+    "parallel_workers_per_gather": 0,
+    "default_feature_group": "behavioral_pair_features",
+    "partitions": [
+      {
+        "name": "train",
+        "cutoff_utc": "2019-01-01T00:00:00+00:00",
+        "label_end_utc": "2020-01-01T00:00:00+00:00",
+        "feature_schema": "features_20190101"
+      },
+      {
+        "name": "validation",
+        "cutoff_utc": "2020-01-01T00:00:00+00:00",
+        "label_end_utc": "2021-01-01T00:00:00+00:00",
+        "feature_schema": "features_20200101"
+      },
+      {
+        "name": "test",
+        "cutoff_utc": "2021-01-01T00:00:00+00:00",
+        "label_end_utc": "2022-01-01T00:00:00+00:00",
+        "feature_schema": "features_20210101"
+      }
+    ],
+    "selection_note": "Chosen before model results, using adjacent full calendar years and reusing the existing 2020 snapshot. The 2020 window has 366 days; compare models within the same partition, not scores across years as improvements.",
+    "test_policy": "No test labels for fitting, feature selection, or tuning. Learned parameters stay frozen after validation selection; deterministic historical input features may refresh at each prediction cutoff."
+  },
+  "feature_configuration": {
+    "snapshot_schema": "features_20200101",
+    "cutoff_utc": "2020-01-01T00:00:00+00:00",
+    "recent_window_days": 90,
+    "movie_prior_count": 20.0,
+    "genre_prior_weight": 5.0,
+    "genre_metadata_policy": "static_unversioned_assumption",
+    "example_users": 20,
+    "example_movies": 50,
+    "work_mem_mb": 64,
+    "parallel_workers_per_gather": 0,
+    "inspect_query_plans": true,
+    "purpose": "Exploratory feature snapshot only; no train/validation/test split or model result. All behavioral inputs strictly precede cutoff."
+  },
+  "feature_bindings": {},
+  "started_at_utc": "2026-11-15T08:45:51.429256+00:00",
+  "phase": "completed",
+  "scope": "Problem/data definition only; no models or ranking metrics",
+  "environment": {
+    "python": "3.13.13",
+    "psycopg": "3.3.6",
+    "postgresql": "16.15 (Debian 16.15-1.pgdg13+2)"
+  },
+  "datasets": {
+    "user_coverage": [
+      {
+        "split": "train",
+        "window_users": 12345,
+        "ranking_users": 5150,
+        "window_cold_users": 6850,
+        "window_warm_users": 5462,
+        "window_sparse_users": 33,
+        "all_warm_history_users": 172497,
+        "inconsistent_history_count_users": 0,
+        "window_users_with_observed_positive": 12083,
+        "window_warm_users_without_eligible_positive": 312
+      },
+      {
+        "split": "validation",
+        "window_users": 14525,
+        "ranking_users": 5716,
+        "window_cold_users": 8531,
+        "window_warm_users": 5955,
+        "window_sparse_users": 39,
+        "all_warm_history_users": 179352,
+        "inconsistent_history_count_users": 0,
+        "window_users_with_observed_positive": 14317,
+        "window_warm_users_without_eligible_positive": 239
+      },
+      {
+        "split": "test",
+        "window_users": 12109,
+        "ranking_users": 6082,
+        "window_cold_users": 5668,
+        "window_warm_users": 6405,
+        "window_sparse_users": 36,
+        "all_warm_history_users": 187892,
+        "inconsistent_history_count_users": 0,
+        "window_users_with_observed_positive": 11832,
+        "window_warm_users_without_eligible_positive": 323
+      }
+    ],
+    "audit_snapshot_utc": "2026-11-15 08:45:51.448428+00",
+    "coverage_sql_sha256": "769e50c172135afd8032da41ba6f257989dc60466cf102ac9d93cddd92c2b798",
+    "read_only": true
+  },
+  "total_seconds": 0.8825673330065911,
+  "completed_at_utc": "2026-11-15T08:45:52.312223+00:00"
+}

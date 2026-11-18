@@ -1,0 +1,34 @@
+{
+  "protocol_id": "calendar_v1_observed_positive_ranking",
+  "dataset_schema": "datasets_calendar_v1",
+  "positive_rating_threshold": 4.0,
+  "minimum_history_ratings": 5,
+  "unobserved_per_positive": 4,
+  "negative_seed": 42,
+  "primary_ranking_k": [10, 20],
+  "work_mem_mb": 64,
+  "parallel_workers_per_gather": 0,
+  "default_feature_group": "behavioral_pair_features",
+  "partitions": [
+    {
+      "name": "train",
+      "cutoff_utc": "2019-01-01T00:00:00+00:00",
+      "label_end_utc": "2020-01-01T00:00:00+00:00",
+      "feature_schema": "features_20190101"
+    },
+    {
+      "name": "validation",
+      "cutoff_utc": "2020-01-01T00:00:00+00:00",
+      "label_end_utc": "2021-01-01T00:00:00+00:00",
+      "feature_schema": "features_20200101"
+    },
+    {
+      "name": "test",
+      "cutoff_utc": "2021-01-01T00:00:00+00:00",
+      "label_end_utc": "2022-01-01T00:00:00+00:00",
+      "feature_schema": "features_20210101"
+    }
+  ],
+  "selection_note": "Chosen before model results, using adjacent full calendar years and reusing the existing 2020 snapshot. The 2020 window has 366 days; compare models within the same partition, not scores across years as improvements.",
+  "test_policy": "No test labels for fitting, feature selection, or tuning. Learned parameters stay frozen after validation selection; deterministic historical input features may refresh at each prediction cutoff."
+}
