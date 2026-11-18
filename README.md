@@ -88,7 +88,11 @@ all validation positive labels and **20.58%** of test positives. Exclusion reaso
 and full denominators are recorded. See the [problem definition](docs/problem_formulation.md),
 [dataset runbook](docs/temporal_datasets.md), and [actual coverage evidence](experiments/datasets/README.md).
 
-Next is Milestone 6: baseline recommendation models and tested ranking metrics.
+**Milestone 6 in progress — Step 1/6 complete, Substep 3/3: ranking metrics.** Binary Recall, Precision,
+NDCG, and Hit Rate are implemented with 35 passing synthetic tests, including
+strict cohort matching and equal user weighting. See the
+[evaluation guide and six-step plan](docs/evaluation.md). Next is the popularity
+baseline using the same historical candidates and validation cohort.
 No model training or ranking scores have been executed. Labels must be at/after
 their feature cutoff; whole-history quality aggregates and context's full-source
 count are never training features. The pre-2020 snapshot now serves validation,
@@ -124,7 +128,7 @@ Existing tables and rows persist in the Docker volume. See [data/README.md](data
 
 When finished, run `docker compose stop` and `deactivate`. Do not use `docker compose down -v` unless you intend to delete the database volume.
 
-Run unit tests with `python -m pytest -q`. With Docker running and the development database available, run the opt-in integration suite with `RECSYS_TEST_DATABASE=1 python -m pytest -q`. The executed suite passed 79 tests.
+Run unit tests with `python -m pytest -q`. With Docker running and the development database available, run the opt-in integration suite with `RECSYS_TEST_DATABASE=1 python -m pytest -q`. The executed suite passed 114 tests.
 
 ## License and data usage
 

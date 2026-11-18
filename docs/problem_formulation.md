@@ -29,8 +29,8 @@ regression model is implemented here.
 - Training contrast: four sampled unobserved items per eligible positive,
   capped by available pool size, with seed 42 and per-user stable randomness.
 - Primary future ranking metrics: Recall@10/20 and NDCG@10/20; additionally
-  Precision@10/20 and Hit Rate@10/20. Metrics/models belong to Milestone 6 and
-  have not yet been executed.
+  Precision@10/20 and Hit Rate@10/20. Metric implementations now have synthetic
+  unit tests in Milestone 6; no model evaluation has been executed.
 - Default pair feature group is behavioral only. The optional static-genre
   group still requires the Milestone 4 metadata assumption and is disabled by
   default; any later inclusion must be a documented experiment.
@@ -185,7 +185,8 @@ same candidate pool, ground truth, and user cohort for a given partition. Future
 unobserved or lower-rated candidates remain in the pool; they are nonrelevant
 under the observed-positive metric definition, not proven dislikes.
 
-Milestone 6 will implement/test these binary-relevance definitions:
+Milestone 6 implements/tests these binary-relevance definitions in
+`src/evaluation/metrics.py` (see [the evaluation guide](evaluation.md)):
 
 - Return up to K unique candidate items; score ties break by movie ID ascending.
 - Recall@K: hits divided by the user's eligible-positive count.
@@ -196,6 +197,6 @@ Milestone 6 will implement/test these binary-relevance definitions:
 - Macro average equally over the fixed ranking users with positive denominators.
   Do not silently switch to interaction-weighted averages or sample candidates.
 
-No metric values have been computed here. Test target values may be inspected
+No model metric values have been computed here. Test target values may be inspected
 for integrity/coverage, but not model choice or tuning. Model-level test results
 must stay untouched until choices are frozen.
